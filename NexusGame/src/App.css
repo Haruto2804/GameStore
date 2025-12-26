@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  /* ===== Background ===== */
+  --color-bg-base: #040716;      /* nền sâu nhất */
+  --color-bg-app: #111725;       /* nền toàn app */
+  --color-bg-card: #172025;      /* card game */
+  --color-bg-elevated: #212D33;  /* hover / dropdown */
+  --color-bg-header: #040716   
+  /* ===== Primary (CTA) ===== */
+  --color-primary: #1FB65A;      /* mua ngay / hot, button,*/
+  --color-primary-muted: #4DA3A0;/* accent phụ */
+  /* ===== Accent ===== */
+  --color-accent: #2E4C4F;       /* tag / category */
+  /* ===== Text ===== */
+  --color-text-main: #EBEDE7;    /* tiêu đề */
+  --color-text-sub: #CBC1A1;     /* mô tả */
+  --color-text-muted: #5F5E55;   /* meta / giá cũ */
+}
