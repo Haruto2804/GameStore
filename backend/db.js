@@ -1,0 +1,17 @@
+const { MongoClient } = require('mongodb')
+
+let dbConnection
+module.exports = {
+  connectToDb: (callBack) => {
+    MongoClient.connect('mongodb://localhost:27017/')
+      .then((client) => {
+        dbConnection = client.db('game');
+        return callBack()
+      })
+      .catch((error) => {
+        console.log(error);
+        return callBack(error);
+      })
+  },
+  getDb: () => dbConnection
+}

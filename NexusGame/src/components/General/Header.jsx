@@ -33,7 +33,7 @@ const headerLink = [
 export function Header() {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   return (
-    <div className="fixed top-0 left-0 right-0 bg-bg-app p-2 flex items-center justify-between select-none">
+    <div className="fixed top-0 left-0 right-0 bg-bg-app p-2 flex items-center justify-between select-none z-100">
       <div
         className="relative size-10 flex items-center justify-center cursor-pointer select-none lg:hidden"
         onClick={() => setIsOpenMenu(!isOpenMenu)}
@@ -55,15 +55,14 @@ export function Header() {
     `}
         />
       </div>
-      {
-        <div className={`
+      <div className={`
         fixed top-19 left-0 bottom-0 transition-all duration-500 ease-in-out z-50
         ${isOpenMenu ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0 pointer-events-none"}
         `}>
-          <Menu
-            headerLink={headerLink} />
-        </div>
-      }
+        <Menu
+          headerLink={headerLink} />
+      </div>
+
 
 
       <img src={LogoGame} className="size-15" alt="" />

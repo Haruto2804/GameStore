@@ -1,5 +1,5 @@
 @import "tailwindcss";
-
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap');
 @theme {
   /* ===== Background ===== */
   --color-bg-base: #040716;      /* nền sâu nhất */
@@ -16,4 +16,5 @@
   --color-text-main: #EBEDE7;    /* tiêu đề */
   --color-text-sub: #CBC1A1;     /* mô tả */
   --color-text-muted: #5F5E55;   /* meta / giá cũ */
+  --font-Rajdhani: "Rajdhani",sans-serif;
 }
