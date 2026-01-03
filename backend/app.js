@@ -51,3 +51,15 @@ app.get('/games/genre/:id', async (req, res) => {
     res.status(500).json({ error: "Lỗi khi lọc game" });
   }
 });
+app.get('/games/top-rated', async (req,res)=> {
+  try {
+    const topGame = await db.collection('games')
+    .find()
+    .sort({metascore: -1})
+    .limit(1)
+    .next();
+    res.status(200).json(topGame);
+  }catch(err) {
+    res.status(500).json({ error: "Lỗi khi lấy game rating cao" });
+  }
+})

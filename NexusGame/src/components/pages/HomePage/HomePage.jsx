@@ -1,8 +1,13 @@
 import CyperPunk from '../../../../public/games-picture/cyperpunk2077.png'
 import LikeButton from '../../General/LikeButton'
-import { useContext, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { CardGame } from './CardGame';
 import { DataGameContext } from '../../../Context/GameContext.js';
+import { ActionFeedBack } from '../../General/ActionFeedback';
+import { TbShoppingCartFilled } from "react-icons/tb";
+import { CartContext } from '../../../Context/CartContext.js';
+import { FaHeart } from "react-icons/fa";
+import axios from 'axios';
 const categories = [
   {
     id: "all",
@@ -35,16 +40,67 @@ const categories = [
 
 ]
 export function HomePage() {
+  const { addToCart } = useContext(CartContext);
   const [liked, setLiked] = useState(false);
+  const [top1Game, setTop1Game] = useState({});
+  const [, setError] = useState("");
+  const finalPriceTop1Game = useMemo(() => {
+    const base_price = Number(top1Game?.pricing?.base_price);
+    const discount_percent = Number(top1Game?.pricing?.discount_percent);
+    if (discount_percent === 0) {
+      return base_price;
+    }
+    else {
+      return base_price * (base_price * (1 - discount_percent / 100));
+    }
+  }, [top1Game])
+
   const [chooseGenre, setChooseGenre] = useState("");
-  const { gameData, setGameData } = useContext(DataGameContext)
+  const { gameData } = useContext(DataGameContext);
+  const [isOpenAddToCart, setIsOpenAddToCart] = useState(false);
+  const [isOpenWishes, setIsOpenWishes] = useState(false);
+  const handleIsOpenAddToCart = useCallback(() => {
+    setIsOpenAddToCart(!isOpenAddToCart);
+    setTimeout(() => {
+      setIsOpenAddToCart(false);
+    }, 2000)
+  }, [isOpenAddToCart]);
+  const handleWishList = useCallback(() => {
+    setIsOpenWishes(!isOpenWishes);
+    setTimeout(() => {
+      setIsOpenWishes(false);
+    }, 2000)
+  }, [isOpenWishes])
+  const fetchTop1Game = useCallback(async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/games/top-rated');
+      setTop1Game(response.data);
+      setError("");
+    }
+    catch {
+      setError("Lỗi khi lấy dữ liệu top 1 game");
+    }
+  }, [])
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchTop1Game();
+  }, [fetchTop1Game]);
+  console.log(top1Game)
   return (
     <div className="bg-bg-base pb-20">
+      <ActionFeedBack
+        Icon={FaHeart}
+        title="Đã thêm vào ước muốn"
+        isOpen={isOpenWishes}
+      />
+      <ActionFeedBack
+        title="Đã thêm vào giỏ hàng."
+        Icon={TbShoppingCartFilled}
+        isOpen={isOpenAddToCart} ></ActionFeedBack>
       <div className="relative mt-20 w-full h-175 max-h-screen overflow-hidden group">
-
         {/* 2. Ảnh sẽ phóng to bên trong khung này */}
         <img
-          src={CyperPunk}
+          src={top1Game?.media?.thumbnail}
           className="absolute inset-0 object-cover h-full w-full transition-transform duration-1000 ease-in-out group-hover:scale-110"
           alt="Cyberpunk 2077"
         />
@@ -55,28 +111,38 @@ export function HomePage() {
         {/* 4. Nội dung text và nút bấm */}
         <div className="absolute inset-0 z-20 p-4 flex flex-col justify-center left-7 w-5/6 md:gap-5 gap-8">
           <div className="bg-green-500 p-2 rounded-full w-40">
-            <p className="uppercase text font-bold text-xs">Nổi bật tuần này</p>
+            <p className="uppercase text font-bold text-xs">Game có điểm MetaScore cao nhất</p>
           </div>
 
           <p className="text-4xl text-white font-bold mt-5 md:w-2/3 lg:text-5xl drop-shadow-lg">
-            Cyberpunk 2077: Phantom Liberty
+            {top1Game?.game_title}
           </p>
 
           <p className="md:text-xl text-gray-300 w-2/3 line-clamp-3 font-semibold drop-shadow-md">
-            Trở lại Night City với một câu chuyện trinh thám ly kỳ hoàn toàn mới.
-            Khám phá khu vực Dogtown chưa từng thấy...
+            {top1Game?.description?.long_description}
           </p>
 
           <div className="flex flex-col gap-4 mt-8 md:flex-row">
-            <button className="bg-green-500 p-3 px-8 rounded-lg font-bold text-black cursor-pointer hover:-translate-y-1 transition-all duration-300 hover:bg-green-400">
-              Mua ngay - 900.000đ
+            <button
+              onClick={() => {
+                addToCart(top1Game);
+                handleIsOpenAddToCart()
+              }}
+              className="bg-green-500 p-3 px-8 rounded-lg font-bold text-black cursor-pointer hover:-translate-y-1 transition-all duration-300 hover:bg-green-400">
+              Thêm vào giỏ hàng ngay - {finalPriceTop1Game.toLocaleString('vi-VN')} {top1Game?.pricing?.currency}
             </button>
 
             <div
               onClick={() => setLiked(!liked)}
               className="relative"
             >
-              <button className={`
+              <button
+                onClick={() => {
+                  if (!liked) {
+                    handleWishList();
+                  }
+                }}
+                className={`
                 ${liked ? "ring-2 ring-red-500 shadow-lg shadow-red-500/20" : "ring-1 ring-white/30"}
                 bg-white/10 backdrop-blur-md w-full text-white p-3 pl-12 rounded-lg 
                 font-semibold transition-all duration-300 hover:bg-white/20
@@ -84,7 +150,7 @@ export function HomePage() {
                 Thêm vào ước muốn
               </button>
               <div className="  absolute top-2 left-2 pointer-events-none">
-                <LikeButton color = "red" size = {32} liked={liked} />
+                <LikeButton color="red" size={32} liked={liked} />
               </div>
             </div>
           </div>

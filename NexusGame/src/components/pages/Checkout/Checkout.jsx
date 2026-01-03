@@ -69,7 +69,7 @@ export function Checkout() {
       <div className="bg-bg-base min-h-screen text-white">
         <div className="mt-22 max-w-7xl mx-auto p-4 flex flex-col gap-3">
           <div className="flex gap-2 text-slate-400 text-sm">
-            <Link to = "/" className = "select-none cursor-pointer ">Store</Link>
+            <Link to="/" className="select-none cursor-pointer ">Store</Link>
             <p>/</p>
             <p className="text-white">Cart</p>
           </div>
@@ -194,7 +194,7 @@ export function Checkout() {
 
               <button className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl transition-all flex gap-3 items-center justify-center shadow-lg shadow-green-500/20 active:scale-95">
                 <MdOutlinePayment className="text-2xl" />
-                <span className="text-lg uppercase tracking-wider">Checkout Now</span>
+                <span className="text-lg uppercase tracking-wider cursor-pointer">Checkout Now</span>
               </button>
 
               <div className="relative mb-6 mt-8">

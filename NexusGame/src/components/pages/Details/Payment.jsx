@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import LikeButton from "../../General/LikeButton";
 import {
   SiPlaystation,
@@ -10,14 +10,41 @@ import { BsXbox } from "react-icons/bs";
 import { HiDesktopComputer } from "react-icons/hi";
 import { CartContext } from "../../../Context/CartContext";
 import { useContext } from "react";
+import { ActionFeedBack } from "../../General/ActionFeedback";
+import { TbShoppingCartFilled } from "react-icons/tb";
+import { FaHeart } from "react-icons/fa";
 export function Payment({ item }) {
   const [liked, setLiked] = useState(false);
+  const [isOpenAddToCart, setIsOpenAddToCart] = useState(false);
+  const [isOpenWishes, setIsOpenWishes] = useState(false);
   const { addToCart } = useContext(CartContext);
   const totalAfterDiscount = (item?.pricing.base_price -
     (item?.pricing.base_price * item?.pricing.discount_percent) / 100)
     .toLocaleString('vi', 'VN');
+  const handleIsOpenAddToCart = useCallback(() => {
+    setIsOpenAddToCart(!isOpenAddToCart);
+    setTimeout(() => {
+      setIsOpenAddToCart(false);
+    }, 2000)
+  }, [isOpenAddToCart])
+  const handleWishList = useCallback(() => {
+    setIsOpenWishes(!isOpenWishes);
+    setTimeout(() => {
+      setIsOpenWishes(false);
+    }, 2000)
+  }, [isOpenWishes])
   return (
     <div className=" rounded-lg bg-slate-900 p-4 flex flex-col gap-5 max-w-full">
+      <ActionFeedBack
+        Icon={TbShoppingCartFilled}
+        title="Đã thêm vào giỏ hàng"
+        isOpen={isOpenAddToCart}
+      />
+      <ActionFeedBack
+        Icon={FaHeart}
+        title="Đã thêm vào ước muốn"
+        isOpen={isOpenWishes}
+      />
       <div className="w-[80%] bg-slate-800 rounded-md mx-auto p-1 flex flex-col">
         <p className="font-bold text-lg text-center uppercase text-white">{item?.game_title}</p>
         <p className=" text-md text-center uppercase text-gray-400">{item?.full_name}</p>
@@ -52,12 +79,21 @@ export function Payment({ item }) {
           font-bold rounded-lg bg-slate-800 border border-gray-700 text-center text-white p-3 w-5/6
         cursor-pointer  transition-all duration-300 
         `}
-          onClick={() => addToCart(item)}
+          onClick={() => {
+            addToCart(item);
+            handleIsOpenAddToCart();
+          }}
         >Add to cart</button>
         <div
-          onClick={() => setLiked(!liked)}
+          onClick={() => {
+            setLiked(!liked);
+            if (!liked) {
+              handleWishList();
+            }
+          }}
           className="p-2 bg-slate-800 rounded-lg flex items-center">
-          <LikeButton size={25} liked={liked} color="green" />
+          <LikeButton
+            size={25} liked={liked} color="green" />
         </div>
       </div>
       <div className="w-full border-t border-gray-700 ">
@@ -113,7 +149,9 @@ export function Payment({ item }) {
         <div className="grid grid-cols-2 gap-2 text-xs mt-5 ">
           {item?.genres.map((item) => {
             return (
-              <div className="
+              <div
+                key={item}
+                className="
           cursor-pointer hover:border-green-500 transition-all duration-500 select-none
           rounded-full border border-gray-800 text-gray-300 font-bold text-center p-2 bg-slate-950">
                 {item}
@@ -125,6 +163,6 @@ export function Payment({ item }) {
         </div>
       </div>
 
-    </div>
+    </div >
   )
 }
