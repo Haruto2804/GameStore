@@ -32,13 +32,16 @@ export const CartProvider = ({ children }) => {
       const quantity = Number(item.quantity) || 0;
       const discountPercent = Number(item.pricing.discount_percent) || 0;
       const priceAfterGameDiscount = basePrice * (1 - discountPercent / 100)
-      return total + (priceAfterGameDiscount *quantity);
+      return total + (priceAfterGameDiscount * quantity);
     }, 0)
   }, [cart])
   const removeFromCart = (productId) => {
     setCart((prevCart) => prevCart.filter((item) => item._id !== productId));
   };
 
+  const resetCart = (() => {
+    setCart([]);
+  })
   const updateQuantity = (id, newQuantity) => {
     setCart((prevCart) => {
       return (
@@ -59,7 +62,8 @@ export const CartProvider = ({ children }) => {
     removeFromCart,
     totalQuantity,
     totalPrice,
-    updateQuantity
+    updateQuantity,
+    resetCart
   };
 
   useEffect(() => {

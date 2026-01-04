@@ -23,11 +23,10 @@ const GAME_PROMO_CODES = [
 ];
 
 export function Checkout() {
-  const { cart, removeFromCart, updateQuantity, totalQuantity, totalPrice } = useContext(CartContext);
+  const { cart, removeFromCart, updateQuantity, totalQuantity, totalPrice, resetCart } = useContext(CartContext);
   const [promoCode, setPromoCode] = useState("");
   const [sale, setSale] = useState(null);
   const [promoError, setPromoError] = useState("");
-
   // Logic kiểm tra mã giảm giá
   const checkSales = () => {
     const inputValue = promoCode.toUpperCase().trim();
@@ -164,7 +163,10 @@ export function Checkout() {
           </div>
 
           {/* Cột phải: Games Summary */}
-          <div className="basis-1/3">
+          <div
+            className={`
+          ${cart.length === 0 ? "opacity-40 pointer-events-none grayscale select-none" : "opacity-100"}
+          basis-1/3`}>
             <div className="bg-slate-900 p-6 rounded-lg border border-slate-800 sticky top-24">
               <h2 className="text-xl font-bold mb-6">Games Summary</h2>
 
@@ -192,7 +194,11 @@ export function Checkout() {
                 <span className="text-green-500">{grandTotal.toLocaleString('vi-VN')} VNĐ</span>
               </div>
 
-              <button className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl transition-all flex gap-3 items-center justify-center shadow-lg shadow-green-500/20 active:scale-95">
+              <button
+                onClick={() => {
+                  resetCart();
+                }}
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl transition-all flex gap-3 items-center justify-center shadow-lg shadow-green-500/20 active:scale-95">
                 <MdOutlinePayment className="text-2xl" />
                 <span className="text-lg uppercase tracking-wider cursor-pointer">Checkout Now</span>
               </button>
