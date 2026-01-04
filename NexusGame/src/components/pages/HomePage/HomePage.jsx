@@ -1,4 +1,4 @@
-import CyperPunk from '../../../../public/games-picture/cyperpunk2077.png'
+
 import LikeButton from '../../General/LikeButton'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { CardGame } from './CardGame';
@@ -43,6 +43,8 @@ export function HomePage() {
   const { addToCart } = useContext(CartContext);
   const [liked, setLiked] = useState(false);
   const [top1Game, setTop1Game] = useState({});
+  const [featuredGames, setFeaturedGames] = useState([]);
+  const [bestDiscountGames, setBestDiscountGames] = useState([]);
   const [, setError] = useState("");
   const finalPriceTop1Game = useMemo(() => {
     const base_price = Number(top1Game?.pricing?.base_price);
@@ -55,8 +57,8 @@ export function HomePage() {
     }
   }, [top1Game])
 
+
   const [chooseGenre, setChooseGenre] = useState("");
-  const { gameData } = useContext(DataGameContext);
   const [isOpenAddToCart, setIsOpenAddToCart] = useState(false);
   const [isOpenWishes, setIsOpenWishes] = useState(false);
   const handleIsOpenAddToCart = useCallback(() => {
@@ -71,21 +73,28 @@ export function HomePage() {
       setIsOpenWishes(false);
     }, 2000)
   }, [isOpenWishes])
-  const fetchTop1Game = useCallback(async () => {
+  const fetchDataGame = useCallback(async () => {
     try {
-      const response = await axios.get('http://localhost:3000/games/top-rated');
-      setTop1Game(response.data);
+      const [top1Res, featuredRes, bestDiscountRes] = await Promise.all([
+        axios.get('http://localhost:3000/games/top-rated'),
+        axios.get('http://localhost:3000/games/featured'),
+        axios.get('http://localhost:3000/games/best_discount'),
+
+      ])
+      setTop1Game(top1Res.data);
+      setFeaturedGames(featuredRes.data);
+      setBestDiscountGames(bestDiscountRes.data);
       setError("");
     }
-    catch {
-      setError("Lỗi khi lấy dữ liệu top 1 game");
+    catch (err) {
+      console.error("Fetch games error:", err);
+      setError("Không thể tải dữ liệu game. Vui lòng thử lại sau.");
     }
   }, [])
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchTop1Game();
-  }, [fetchTop1Game]);
-  console.log(top1Game)
+    fetchDataGame();
+  }, [fetchDataGame]);
   return (
     <div className="bg-bg-base pb-20">
       <ActionFeedBack
@@ -181,7 +190,7 @@ export function HomePage() {
       <div className="container mx-auto px-4 mt-10">
         <p className="text-white text-2xl font-bold mb-3">Trò chơi nổi bật</p>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-          {gameData?.map((item) => {
+          {featuredGames?.map((item) => {
             return (
               <CardGame key={item._id} item={item} />
             )
@@ -193,11 +202,13 @@ export function HomePage() {
       <div className="container mx-auto px-4 mt-10">
         <p className="text-white text-2xl font-bold mb-3">Khuyến mãi đặc biệt</p>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-          <CardGame />
-          <CardGame />
-          <CardGame />
-          <CardGame />
-          <CardGame />
+          {bestDiscountGames.length > 0 ? (
+            bestDiscountGames.map((item) => (
+              <CardGame key={item._id} item={item} />
+            ))
+          ) : (
+            <p className="text-slate-500 italic">Hiện chưa có chương trình giảm giá...</p>
+          )}
         </div>
 
       </div>

@@ -5,15 +5,45 @@ import HarutoPicture from '../../../../public/haruto.png'
 import { AiOutlineLike } from "react-icons/ai";
 import { Payment } from "./Payment";
 import { useParams } from "react-router";
-import { useContext } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { DataGameContext } from "../../../Context/GameContext";
 import { CartContext } from "../../../Context/CartContext";
 import { Link } from "react-router";
+import { ReviewForm } from "./ReviewForm";
+import { ReviewList } from "./ReviewList";
+import axios from "axios";
+import { RiStarFill } from "react-icons/ri";
+const formatDate = (dateString) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  return date.toLocaleDateString("vi-VN"); // Trả về định dạng DD/MM/YYYY
+};
 export function GameDetails() {
-
+  const [reviews, setReviews] = useState([]);
+  const [, setError] = useState("");
   const { id } = useParams();
   const { gameData } = useContext(DataGameContext);
-
+  const [topReviews, setTopReviews] = useState([]);
+  const fetchReviews = useCallback(async () => {
+    try {
+      const [allRes, resTop] = await Promise.all([
+        axios.get(`http://localhost:3000/games/reviews/${id}`),
+        axios.get(`http://localhost:3000/games/reviews/top/${id}`)
+      ])
+      setReviews(allRes.data);
+      setTopReviews(resTop.data);
+      setError("");
+    }
+    catch (err) {
+      console.error("Lỗi khi tải dữ liệu:", err);
+      setError("  Không thể tải đánh giá");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+  useEffect(() => {
+    fetchReviews();
+  }, [fetchReviews]);
+  console.log(topReviews);
   const item = gameData.find((item) => item._id == id);
 
   return (
@@ -104,37 +134,74 @@ export function GameDetails() {
             </div>
             <div className="w-full mt-5 ">
               <p className="font-bold text-xl text-white mb-5 ">Community Reviews</p>
-              <div className="flex flex-col gap-5 md:flex-row">
-                {item?.reviews?.map((item) => {
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                {topReviews?.map((item) => {
                   return (
-                    <div key={item._id} className="bg-slate-900 p-4 rounded-lg basis-1/2">
-                      <div className="flex justify-between items-center">
-                        <div className="flex gap-2">
-                          <img src={HarutoPicture} className="size-10 rounded-full" alt="" />
-                          <div className="">
-                            <p className="text-white font-bold">{item?.user_name}</p>
-                            <p className="text-slate-400 text-md">{item?.posted_date}</p>
-                          </div>
+                    <div
+                      key={item._id}
+                      className=" line-clamp-2 group relative bg-slate-900/50 backdrop-blur-sm p-6 rounded-2xl border border-slate-800 hover:border-blue-500/50 hover:bg-slate-800/80 transition-all duration-500 ease-out shadow-xl hover:shadow-blue-500/10"
+                    >
+                      {/* Trang trí góc thẻ (Option) */}
+                      <div className="absolute top-0 right-0 w-16 h-16 bg-blue-500/5 blur-[50px] group-hover:bg-blue-500/10 transition-colors" />
 
+                      <div className="flex justify-between items-start">
+                        <div className="flex gap-4">
+                          <div className="relative">
+                            <img
+                              src={HarutoPicture}
+                              className="size-12 rounded-xl object-cover ring-2 ring-slate-800 group-hover:ring-blue-500/30 transition-all"
+                              alt={item?.userName}
+                            />
+                            <div className="absolute -bottom-1 -right-1 size-4 bg-green-500 border-2 border-slate-900 rounded-full"></div>
+                          </div>
+                          <div>
+                            <p className="text-slate-100 font-semibold tracking-tight leading-none mb-1.5">
+                              {item?.userName}
+                            </p>
+                            <p className="text-slate-500 text-xs font-medium">
+                              {formatDate(item?.createdAt)}
+                            </p>
+                          </div>
                         </div>
-                        <div className="bg-green-500/20 text-green-500 h-fit py-1 px-3 rounded-sm font-bold text-xs flex items-center gap-2">
-                          <AiOutlineLike className="size-5" />
-                          <p>Recommended</p>
+
+                        <div className="flex items-center gap-1.5 bg-emerald-500/10 text-emerald-400 py-1.5 px-3 rounded-full border border-emerald-500/20 text-[10px] font-bold uppercase tracking-wider">
+                          <AiOutlineLike className="size-3.5" />
+                          <span>Recommended</span>
                         </div>
                       </div>
-                      <p className="text-slate-300 w-5/6 mt-5">{item?.content}</p>
+
+                      {/* PHẦN HIỂN THỊ SỐ SAO */}
+                      <div className="flex items-center mt-5 mb-3 gap-0.5">
+                        {[...Array(5)].map((_, i) => (
+                          <RiStarFill
+                            key={i}
+                            className={`size-4 ${i < item?.rating ? "text-yellow-400" : "text-slate-700"
+                              } transition-colors duration-300`}
+                          />
+                        ))}
+                        <span className="text-slate-400 text-xs ml-3 font-mono">
+                          {item?.rating?.toFixed(1)}
+                        </span>
+                      </div>
+
+                      <div className="relative">
+                        {/* Dấu nháy kép trang trí */}
+                        <span className="absolute -top-2 -left-2 text-4xl text-slate-800 font-serif opacity-50">“</span>
+                        <p className="text-slate-300 text-sm leading-relaxed relative z-10 pl-2">
+                          {item?.comment}
+                        </p>
+                      </div>
                     </div>
                   )
                 })}
-
-
               </div>
-
+              <p className="font-bold text-xl text-white mb-5 ">Hãy để lại nhận xét của bạn về game.</p>
+              <ReviewForm id={id} />
             </div>
+            <ReviewList reviews={reviews} />
           </div>
           <div className=" basis-2/6 p-4">
             <Payment item={item} />
-
           </div>
         </div>
 
