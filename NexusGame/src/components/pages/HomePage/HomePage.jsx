@@ -53,7 +53,7 @@ export function HomePage() {
       return base_price;
     }
     else {
-      return base_price * (base_price * (1 - discount_percent / 100));
+      return base_price * (1 - discount_percent / 100);
     }
   }, [top1Game])
 

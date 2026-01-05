@@ -8,6 +8,7 @@ import { NotFound } from './components/pages/NotFound'
 import { Checkout } from './components/pages/Checkout/Checkout'
 import { CartProvider } from './Context/CartData'
 import { ScrollToTop } from './components/General/ScollToTop'
+import { GameLibraryPage } from './components/pages/GameLibraryPage/GameLibraryPage'
 function App() {
   return (
     <div className="bg-bg-base h-screen w-screen font-Rajdhani ">
@@ -21,11 +22,10 @@ function App() {
               <Route path="/" element={
                 <HomePage />
               }></Route>
-              <Route path="/games">
-                <Route path=":id" element={
+              <Route path="/games" element = {<GameLibraryPage />} />
+              <Route path="/games/:id" element={
                   <GameDetails />
                 }></Route>
-              </Route>
               <Route path="/genres"></Route>
               <Route path="/platform"></Route>
               <Route path="/discount" ></Route>
@@ -34,7 +34,7 @@ function App() {
               <Route path="*" element={<NotFound />}></Route>
             </Routes>
           </DataGameProvider>
-          
+
         </CartProvider>
 
 

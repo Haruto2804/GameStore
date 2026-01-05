@@ -9,7 +9,7 @@ export function CardGame({ item }) {
       <img src={item?.media.thumbnail} className="w-65 h-68 object-cover mb-3 group-hover:scale-110  transition-all duration-500" alt="" />
       <div className="p-2 ">
         <p className="text-green-500 text-xs font-bold mb-2">{item?.genres[0]}</p>
-        <p className="text-white text-lg font-bold mb-2">{item?.game_title}</p>
+        <p className="text-white text-lg font-bold mb-2">{item?.full_name}</p>
 
         {item?.pricing.free_to_play == false ?
           <div className="w-full flex flex-row justify-between items-center">

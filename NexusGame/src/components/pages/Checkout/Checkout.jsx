@@ -111,7 +111,7 @@ export function Checkout() {
                             onClick={() => removeFromCart(item._id)}
                             className="text-gray-500 hover:text-red-500 transition-colors p-1"
                           >
-                            <span className="material-icons-round cursor-pointer">delete</span>
+                            <span className="material-icons-round cursor-pointer">Delete</span>
                           </button>
                         </div>
                         <div className="text-sm text-slate-400 flex items-center gap-2 mt-1">
