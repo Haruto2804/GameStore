@@ -9,6 +9,7 @@ import { Checkout } from './components/pages/Checkout/Checkout'
 import { CartProvider } from './Context/CartData'
 import { ScrollToTop } from './components/General/ScollToTop'
 import { GameLibraryPage } from './components/pages/GameLibraryPage/GameLibraryPage'
+import { Community } from './components/pages/CommunityPage/Community'
 function App() {
   return (
     <div className="bg-bg-base h-screen w-screen font-Rajdhani ">
@@ -22,15 +23,15 @@ function App() {
               <Route path="/" element={
                 <HomePage />
               }></Route>
-              <Route path="/games" element = {<GameLibraryPage />} />
+              <Route path="/games" element={<GameLibraryPage />} />
               <Route path="/games/:id" element={
-                  <GameDetails />
-                }></Route>
+                <GameDetails />
+              }></Route>
+              <Route path="/community" element={<Community />} />
               <Route path="/genres"></Route>
               <Route path="/platform"></Route>
               <Route path="/discount" ></Route>
-              <Route path="/checkout" element={<Checkout />
-              } />
+              <Route path="/checkout" element={<Checkout />} />
               <Route path="*" element={<NotFound />}></Route>
             </Routes>
           </DataGameProvider>

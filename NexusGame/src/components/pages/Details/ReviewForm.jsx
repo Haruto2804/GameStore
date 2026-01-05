@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 
-export function ReviewForm({ id, onReviewAdded }) {
+export function ReviewForm({ fetchReviews,id, onReviewAdded }) {
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(5); // Mặc định là 5 sao
   const [hover, setHover] = useState(0);   // Hiệu ứng khi di chuột qua sao
@@ -18,6 +18,7 @@ export function ReviewForm({ id, onReviewAdded }) {
       });
 
       alert("Gửi nhận xét thành công!");
+      fetchReviews();
       setComment("");
       setRating(5); // Reset về 5 sao sau khi gửi
 

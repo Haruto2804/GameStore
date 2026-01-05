@@ -196,7 +196,7 @@ export function GameDetails() {
                 })}
               </div>
               <p className="font-bold text-xl text-white mb-5 ">Hãy để lại nhận xét của bạn về game.</p>
-              <ReviewForm id={id} />
+              <ReviewForm id={id} fetchReviews = {fetchReviews}/>
             </div>
             <ReviewList reviews={reviews} />
           </div>
