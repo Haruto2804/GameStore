@@ -2,6 +2,7 @@ import { ForumHeader } from "./ForumHeader";
 import { ForumPost } from "./ForumPost";
 
 export function Forum() {
+  
   return (
     <div>
       <div className="flex flex-col gap-5">

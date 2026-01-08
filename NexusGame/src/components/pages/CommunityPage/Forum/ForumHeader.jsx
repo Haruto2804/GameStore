@@ -25,7 +25,7 @@ export function ForumHeader() {
   return (
     <>
       <div className="flex flex-col md:flex-row md:justify-between gap-3">
-        <div className="flex gap-3">
+        <div className="flex gap-3 max-md:flex-wrap">
           {
             categoriesList.map((item) => (
               <button
@@ -35,6 +35,7 @@ export function ForumHeader() {
               ${categories === item.id ? "text-green-500 bg-green-500/25"
                     : ""
                   }
+              whitespace-nowrap
               hover:bg-slate-700/50 
               transition-all duration-300 
               cursor-pointer text-gray-400 
@@ -48,7 +49,7 @@ export function ForumHeader() {
         </div>
         <div className="flex gap-3 items-center">
           <p className="text-gray-400 font-medium ">Sắp xếp: </p>
-          <select className=" px-5 py-2 bg-slate-800 font-bold text-white rounded-lg">
+          <select className=" px-5 py-2 bg-slate-800 font-bold text-white rounded-lg white">
             <option value="">Thời gian</option>
             <option value="">Lượt xem</option>
             <option value="">Bình chọn</option>

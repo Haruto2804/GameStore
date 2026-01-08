@@ -1,6 +1,6 @@
 import { FaEye } from "react-icons/fa"
 import { FaRegCommentAlt } from "react-icons/fa";
-
+import { Link } from "react-router";
 export function ForumPost() {
   return (
     <div className="bg-slate-900 rounded-md border border-green-700/51 p-4 flex flex-col gap-2">
@@ -12,9 +12,9 @@ export function ForumPost() {
         </p>
 
       </div>
-      <h1 className="text-white font-bold text-xl hover:text-green-500 select-none cursor-pointer transition-all duration-300">
+      <Link to="/community/posts/123" className="text-white font-bold text-xl hover:text-green-500 select-none cursor-pointer transition-all duration-300">
         Thông báo bảo trì hệ thống máy chủ ngày 5/1/2026
-      </h1>
+      </Link>
       <p className="text-gray-400">
         Chào các bạn, chúng tôi sẽ tiến hành bảo trì định kỳ hệ thống máy
         chủ vào lúc 02:00 sáng ngày 5/1 . Thời gian dự kiến

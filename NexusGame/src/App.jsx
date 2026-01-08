@@ -10,6 +10,7 @@ import { CartProvider } from './Context/CartData'
 import { ScrollToTop } from './components/General/ScollToTop'
 import { GameLibraryPage } from './components/pages/GameLibraryPage/GameLibraryPage'
 import { Community } from './components/pages/CommunityPage/Community'
+import { DetailsPost } from './components/pages/CommunityPage/DetailsPost'
 function App() {
   return (
     <div className="bg-bg-base h-screen w-screen font-Rajdhani ">
@@ -28,6 +29,7 @@ function App() {
                 <GameDetails />
               }></Route>
               <Route path="/community" element={<Community />} />
+              <Route path="/community/posts/:id" element={<DetailsPost />} />
               <Route path="/genres"></Route>
               <Route path="/platform"></Route>
               <Route path="/discount" ></Route>
