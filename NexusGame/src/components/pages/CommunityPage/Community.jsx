@@ -6,7 +6,7 @@ import { useState } from "react";
 export function Community() {
   const [category, setCategory] = useState("");
   return (
-    <div className="bg-bg-base mt-22">
+    <div className="bg-bg-base mt-22 p-4">
       <div className=" bg-bg-base max-w-6xl mx-auto px-6 flex flex-col">
         <p className="text-3xl flex items-center gap-3 text-white font-bold">
           <RiCommunityFill className="text-green-500" />

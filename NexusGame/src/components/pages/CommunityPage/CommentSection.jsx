@@ -14,7 +14,7 @@ export function CommentSection({ comment, setComment }) {
           onChange={(e)=> setComment(e.target.value)}
           placeholder="Add a comment..."
           className="w-full h-35 p-4 bg-transparent border border-blue-800 rounded-md 
-               focus:ring-2 focus:ring-green-600 focus:outline-none 
+               focus:ring-2 focus:ring-blue-600 focus:outline-none 
                resize-none text-gray-200 placeholder:text-gray-500 
                transition-all duration-300"
         />
@@ -24,7 +24,7 @@ export function CommentSection({ comment, setComment }) {
             onClick={() => setComment("")}
             className="mt-3 hover:bg-slate-800 active:scale-95 cursor-pointer 
                text-white font-bold py-2 px-3 rounded-full 
-               transition-all duration-200 shadow-lg shadow-green-900/20"
+               transition-all duration-200 shadow-lg shadow-blue-900/20"
           >
             Cancel
           </button>
@@ -32,7 +32,7 @@ export function CommentSection({ comment, setComment }) {
           onClick = {() => alert(comment)}
             className="mt-3 bg-blue-600 hover:bg-blue-500 active:scale-95 cursor-pointer 
                text-white font-bold py-2 px-3 rounded-full 
-               transition-all duration-200 shadow-lg shadow-green-900/20"
+               transition-all duration-200 shadow-lg shadow-blue-900/20"
           >
             Post
           </button>

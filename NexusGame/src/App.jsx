@@ -11,6 +11,7 @@ import { ScrollToTop } from './components/General/ScollToTop'
 import { GameLibraryPage } from './components/pages/GameLibraryPage/GameLibraryPage'
 import { Community } from './components/pages/CommunityPage/Community'
 import { DetailsPost } from './components/pages/CommunityPage/DetailsPost'
+import { Library } from './components/pages/LibraryPage/Library'
 function App() {
   return (
     <div className="bg-bg-base h-screen w-screen font-Rajdhani ">
@@ -34,6 +35,7 @@ function App() {
               <Route path="/platform"></Route>
               <Route path="/discount" ></Route>
               <Route path="/checkout" element={<Checkout />} />
+              <Route path="/library" element={<Library />} />
               <Route path="*" element={<NotFound />}></Route>
             </Routes>
           </DataGameProvider>
