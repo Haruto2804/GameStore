@@ -131,7 +131,6 @@ export function Library() {
             <h1 className="text-xl md:text-3xl font-bold text-white tracking-tight">Thư viện của tôi <span className="text-gray-600 font-medium ml-2 text-lg md:text-xl">(24)</span></h1>
             <div className="flex gap-1 bg-[#161b22] p-1 rounded-lg border border-gray-800">
               <button className="px-4 py-1.5 bg-gray-700 rounded-md text-[11px] font-bold text-white shadow-sm">Windows</button>
-              <button className="px-4 py-1.5 text-[11px] font-bold text-gray-500 hover:text-gray-300">Steam Deck</button>
             </div>
           </div>
 
@@ -201,10 +200,9 @@ export function Library() {
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]"></div>
               TRẠNG THÁI KẾT NỐI: <span className="text-green-500 font-bold uppercase tracking-widest">Đã kết nối</span>
             </div>
-            <div>DUNG LƯỢNG Ổ ĐĨA: <span className="text-gray-300 font-bold">420 GB trống / 1 TB</span></div>
           </div>
           <div className="flex items-center gap-6">
-            <p className="tracking-widest">PHIÊN BẢN <span className="text-gray-300 font-bold">v2.4.12 Stable</span></p>
+            <p className="tracking-widest">PHIÊN BẢN <span className="text-gray-300 font-bold">v2.4.12 HarutoSoftWare</span></p>
             <div className="bg-green-500 text-black p-1 px-2 rounded-md font-bold cursor-pointer hover:bg-green-400 transition-colors shadow-lg shadow-green-500/10">?</div>
           </div>
         </footer>

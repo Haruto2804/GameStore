@@ -25,16 +25,12 @@ const headerLink = [
   },
   {
     title: "Cộng đồng",
-    path: "/community"
-  },
-  {
-    title: "Hỗ trợ",
-    path: "/support"
+    path:"/community"
   }
 ]
 export function Header() {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
-  const { cart, totalQuantity } = useContext(CartContext);
+  const { totalQuantity } = useContext(CartContext);
   console.log(totalQuantity)
   return (
     <div className="fixed top-0 left-0 right-0 bg-bg-app p-2 flex items-center justify-between select-none z-100">

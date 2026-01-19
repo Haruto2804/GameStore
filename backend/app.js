@@ -1,157 +1,161 @@
 const express = require('express');
-const cors = require('cors'); // Thêm dòng này
-const { connectToDb, getDb } = require('./db.js');
-const app = express();
-app.use(cors())
-app.use(express.json()); // BẮT BUỘC: Thêm dòng này để đọc được req.body
-let db;
+const cors = require('cors');
+const mongoose = require('mongoose');
 
-// Kết nối DB trước, sau đó mới chạy Server
-connectToDb((error) => {
-  if (!error) {
-    app.listen(3000, () => {
-      console.log('Server is running on http://localhost:3000');
-    });
-    db = getDb();
-  } else {
-    console.log("Lỗi kết nối DB:", error);
-  }
-});
-console.log(db)
-// Route lấy toàn bộ danh sách game
+// Import Models
+const Game = require('./models/game.model.js');
+const Review = require('./models/review.model.js');
+const CommunityPost = require('./models/communityPost.model.js');
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// Kết nối Database
+mongoose.connect('mongodb://localhost:27017/game')
+  .then(() => {
+    console.log('Đã kết nối MongoDB qua Mongoose');
+    app.listen(3000, () => console.log('Server is running on http://localhost:3000'));
+  })
+  .catch(err => console.error("Lỗi kết nối DB:", err));
+
+// ==========================================
+// --- ROUTES CHO GAMES ---
+// ==========================================
+
+// Lấy danh sách tất cả game
 app.get('/games', async (req, res) => {
   try {
-    let games = [];
-    // Sử dụng toArray() để lấy toàn bộ dữ liệu dưới dạng mảng
-    games = await db.collection('games')
-      .find()
-      .sort({ game_title: 1 }) // Sắp xếp theo tên từ A-Z
-      .toArray();
-
-    res.status(200).json(games);
+    const games = await Game.find().sort({ game_title: 1 });
+    res.json(games);
   } catch (err) {
-    res.status(500).json({ error: "Không thể lấy dữ liệu game" });
+    res.status(500).json({ error: "Lỗi lấy danh sách game" });
   }
 });
 
-// Route lọc game theo thể loại (Kết nối với frontend của bạn)
+// Lọc game theo thể loại
 app.get('/games/genre/:id', async (req, res) => {
   try {
-    const genreId = req.params.id;
-    let query = {};
-
-    if (genreId !== 'all') {
-      // Tìm các game có categoryId tương ứng
-      query = { categoryId: genreId };
-    }
-
-    const games = await db.collection('games').find(query).toArray();
-    res.status(200).json(games);
+    const query = req.params.id === 'all' ? {} : { categoryId: req.params.id };
+    const games = await Game.find(query);
+    res.json(games);
   } catch (err) {
-    res.status(500).json({ error: "Lỗi khi lọc game" });
+    res.status(500).json({ error: "Lỗi lọc game" });
   }
 });
+
+// Lấy game có metascore cao nhất
 app.get('/games/top-rated', async (req, res) => {
   try {
-    const topGame = await db.collection('games')
-      .find()
-      .sort({ metascore: -1 })
-      .limit(1)
-      .next();
-    res.status(200).json(topGame);
+    const topGame = await Game.findOne().sort({ metascore: -1 });
+    res.json(topGame);
   } catch (err) {
-    res.status(500).json({ error: "Lỗi khi lấy game rating cao" });
-  }
-})
-
-app.post('/games/reviews', async (req, res) => {
-  try {
-    const { gameId, userName, rating, comment } = req.body;
-    if (!gameId || !comment || !rating) {
-      return res.status(400).json({ error: "Vui lòng nhập đầy đủ thông tin và điểm đánh giá!" });
-    }
-    const newReview = {
-      gameId: gameId,
-      userName: userName || "Người dùng ẩn danh",
-      rating: Number(rating),
-      comment: comment,
-      createdAt: new Date()
-    }
-    const result = await db.collection('reviews').insertOne(newReview);
-
-    res.status(201).json({
-      message: "Gửi nhận xét thành công!",
-      reviewId: result.insertedId
-    });
-  }
-  catch (err) {
-    console.error("Lỗi Post Review:", err);
-    res.status(500).json({ error: "Không thể lưu nhận xét vào hệ thống" });
-  }
-})
-app.get('/games/reviews/:gameId', async (req, res) => {
-  try {
-    const { gameId } = req.params;
-
-    // Nếu có gameId thì lọc, không thì lấy hết (hoặc báo lỗi)
-    const filter = gameId ? { gameId: gameId } : {};
-
-    const reviews = await db.collection('reviews')
-      .find(filter)
-      .sort({ createdAt: -1 })
-      .toArray();
-
-    res.status(200).json(reviews);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Lỗi server" });
+    res.status(500).json({ error: "Lỗi lấy game rating cao" });
   }
 });
+
+// Lấy 5 game nổi bật
+app.get('/games/featured', async (req, res) => {
+  try {
+    const featured = await Game.find()
+      .select('game_title pricing media metascore genres')
+      .sort({ metascore: -1 })
+      .limit(5);
+    res.json(featured);
+  } catch (err) {
+    res.status(500).json({ error: "Lỗi lấy game nổi bật" });
+  }
+});
+
+// Lấy 5 game giảm giá sâu nhất
+app.get('/games/best_discount', async (req, res) => {
+  try {
+    const bestDiscounts = await Game.find({ "pricing.discount_percent": { $gt: 0 } })
+      .sort({ "pricing.discount_percent": -1 })
+      .limit(5);
+    res.json(bestDiscounts);
+  } catch (err) {
+    res.status(500).json({ error: "Lỗi lấy game giảm giá" });
+  }
+});
+
+// ==========================================
+// --- ROUTES CHO REVIEWS ---
+// ==========================================
+
+// 1. Gửi nhận xét mới
+app.post('/games/reviews', async (req, res) => {
+  try {
+    const review = await Review.create(req.body);
+    res.status(201).json({ message: "Gửi nhận xét thành công!", reviewId: review._id });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// 2. Lấy toàn bộ reviews trong database (không lọc)
+app.get('/games/reviews', async (req, res) => {
+  try {
+    const reviews = await Review.find();
+    res.json(reviews);
+  } catch (err) {
+    res.status(500).json({ error: "Lỗi lấy toàn bộ đánh giá" });
+  }
+});
+
+// 3. Lấy TOP reviews của một game (Rating cao nhất, mới nhất)
+// QUAN TRỌNG: Route này phải nằm TRÊN route có tham số :gameId chung
 app.get('/games/reviews/top/:gameId', async (req, res) => {
   try {
     const { gameId } = req.params;
-    const topReviews = await db.collection('reviews')
-      .find({ gameId: gameId })
+    const reviews = await Review.find({ gameId: gameId })
       .sort({ rating: -1, createdAt: -1 })
-      .limit(2)
-      .toArray();
-    res.status(200).json(topReviews);
-  }
-  catch (err) {
-    res.status(500).json({ error: "Lỗi khi lấy đánh giá nổi bật" })
-  }
-})
-app.get('/games/featured', async (req, res) => {
-  try {
-    const featuredGames = await db.collection('games')
-      .find({})
-      .project({
-        game_title: 1,
-        pricing: 1,
-        media: 1,
-        metascore: 1,
-        genres: 1
-      }) // Chỉ lấy những trường cần cho CardGame
-      .sort({ metascore: -1 })
-      .limit(5) //
-      .toArray();
-    res.status(200).json(featuredGames);
+      .limit(2);
+    res.json(reviews);
   } catch (err) {
-    console.error("Error at /games/featured:", err);
-    res.status(500).json({ error: "Lỗi khi lấy danh sách trò chơi nổi bật" });
+    res.status(500).json({ error: "Lỗi lấy dữ liệu top reviews" });
   }
 });
-app.get('/games/best_discount', async (req, res) => {
+
+// 4. Lấy tất cả reviews của một game (Sắp xếp mới nhất lên đầu)
+app.get('/games/reviews/:gameId', async (req, res) => {
   try {
-    const bestDiscountGames = await db.collection('games')
-      .find({ "pricing.discount_percent": { $gt: 0 } })
-      .sort({ "pricing.discount_percent": -1 })
-      .limit(5)
-      .toArray();
-    res.status(200).json(bestDiscountGames);
+    const { gameId } = req.params;
+    const reviews = await Review.find({ gameId: gameId }).sort({ createdAt: -1 });
+    res.json(reviews);
+  } catch (err) {
+    res.status(500).json({ error: "Lỗi lấy đánh giá của game" });
   }
-  catch (err) {
-    console.error("Error at /games/featured:", err);
-    res.status(500).json({ error: "Lỗi khi lấy danh sách trò chơi nổi bật" });
+});
+
+// ==========================================
+// --- ROUTES CHO COMMUNITY POSTS ---
+// ==========================================
+
+
+app.get('/api/community/posts', async (req, res) => {
+  try {
+    const post = await CommunityPost.find()
+ 
+    res.json(post);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
-})
+});
+app.get('/api/community/posts/:id', async (req, res) => {
+  try {
+    const postId = req.params.id;
+  const post = await CommunityPost.findById(postId);
+    res.json(post);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+app.post('/api/community/posts', async (req, res) => {
+  try {
+    const post = await CommunityPost.create(req.body);
+    res.status(201).json(post);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});

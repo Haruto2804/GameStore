@@ -1,24 +1,23 @@
 import { FaEye } from "react-icons/fa"
 import { FaRegCommentAlt } from "react-icons/fa";
 import { Link } from "react-router";
-export function ForumPost() {
+export function ForumPost({postItem}) {
+const displayDate = postItem.formatted_date || "Vừa xong";
   return (
     <div className="bg-slate-900 rounded-md border border-green-700/51 p-4 flex flex-col gap-2">
       <div className="text-sm">
         <p className="text-gray-500">
           Đăng bởi |
-          <span className="text-white"> Admin </span>
-          <span> | 2 giờ trước</span>
+          <span className="text-white"> Haruto </span>
+          <span> | {displayDate}</span>
         </p>
 
       </div>
-      <Link to="/community/posts/123" className="text-white font-bold text-xl hover:text-green-500 select-none cursor-pointer transition-all duration-300">
-        Thông báo bảo trì hệ thống máy chủ ngày 5/1/2026
+      <Link to={`/community/posts/${postItem._id}`} className="text-white font-bold text-xl hover:text-green-500 select-none cursor-pointer transition-all duration-300">
+        {postItem?.title}
       </Link>
-      <p className="text-gray-400">
-        Chào các bạn, chúng tôi sẽ tiến hành bảo trì định kỳ hệ thống máy
-        chủ vào lúc 02:00 sáng ngày 5/1 . Thời gian dự kiến
-        kéo dài 4 tiếng. Trong thời gian này, một số dịch vụ...
+      <p className="text-gray-400 line-clamp-3">
+      {postItem?.content.text}
       </p>
       <div className="flex justify-between items-center">
         <div className="flex gap-4">
@@ -27,7 +26,7 @@ export function ForumPost() {
         <div className="flex gap-2 text-gray-500 text-md">
           <div className="flex  items-center gap-1">
             <FaEye className="size-4" />
-            <p>1.2K</p>
+            <p>{postItem?.stats.views}</p>
           </div>
           <div className="flex  items-center gap-1">
             <FaRegCommentAlt className="size-4" />

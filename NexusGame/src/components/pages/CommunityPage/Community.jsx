@@ -2,9 +2,24 @@ import { CategoryForumList } from "./Forum/CategoryForumList";
 import { Forum } from "./Forum/Forum";
 import { RiCommunityFill } from "react-icons/ri";
 import { ForumLeaderBoard } from "./Forum/ForumLeaderBoard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 export function Community() {
   const [category, setCategory] = useState("");
+  const [communityPosts, setCommunityPosts] = useState([]);
+  useEffect(() => {
+    const fetchCommunityPosts = async () => { // Bỏ cặp ngoặc ( ) dư thừa ở đây
+      try {
+        const res = await axios.get('http://localhost:3000/api/community/posts');
+        setCommunityPosts(res.data);
+      } catch (err) {
+        console.error('Lỗi khi fetch community Posts: ', err);
+      }
+    };
+
+    fetchCommunityPosts();
+  }, []);
+  console.log(communityPosts)
   return (
     <div className="bg-bg-base mt-22 p-4">
       <div className=" bg-bg-base max-w-6xl mx-auto px-6 flex flex-col">
@@ -22,7 +37,7 @@ export function Community() {
             <CategoryForumList category={category} setCategory={setCategory} />
             <ForumLeaderBoard />
           </div>
-          <Forum />
+          <Forum communityPosts={communityPosts} />
         </div>
 
       </div>
