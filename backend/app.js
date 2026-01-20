@@ -136,7 +136,7 @@ app.get('/games/reviews/:gameId', async (req, res) => {
 app.get('/api/community/posts', async (req, res) => {
   try {
     const post = await CommunityPost.find()
- 
+    .sort({posted_at: -1})
     res.json(post);
   } catch (error) {
     res.status(400).json({ message: error.message });
