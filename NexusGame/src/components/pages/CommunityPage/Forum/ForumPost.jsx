@@ -21,7 +21,15 @@ export function ForumPost({ postItem }) {
       </p>
       <div className="flex justify-between items-center">
         <div className="flex gap-4">
-          <div className="bg-slate-800 rounded-lg py-1 px-3 text-gray-500 text-sm cursor-pointer hover:bg-slate-700 transition-all duration-200">#thongbao</div>
+          {postItem?.tags.map((item) => {
+            return (
+              <div 
+              key = {item}
+              className="bg-slate-800 rounded-lg py-1 px-3 
+              text-gray-500 text-sm cursor-pointer hover:bg-slate-700 
+              transition-all duration-200">{item}</div>
+            )
+          })}
         </div>
         <div className="flex gap-2 text-gray-500 text-md">
           <div className="flex  items-center gap-1">

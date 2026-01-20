@@ -12,7 +12,6 @@ import { Link } from "react-router";
 import { useParams } from "react-router";
 import axios from "axios";
 import { useCallback } from "react";
-// ... (giữ nguyên phần import)
 
 export function DetailsPost() {
   const [comment, setComment] = useState("");
@@ -38,7 +37,6 @@ export function DetailsPost() {
       console.error("Không thể like bài viết:", err);
     }
   }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const incrementView = useCallback(async () => {
     try {
       await axios.patch(`http://localhost:3000/api/community/posts/${id}/views`);
@@ -47,7 +45,7 @@ export function DetailsPost() {
     catch (err) {
       console.error("Không thể cập nhật view bài viết:", err);
     }
-  },[id])
+  }, [id])
   useEffect(() => {
     const fecthDetailsPost = async () => {
       try {

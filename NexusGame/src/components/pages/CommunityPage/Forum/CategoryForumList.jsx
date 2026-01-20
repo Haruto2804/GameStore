@@ -16,7 +16,7 @@ const categoriesList = [
     color: "text-blue-400"
   },
   {
-    id: "AnQH",
+    id: "qna",
     label: "Hỏi & đáp",
     icon: <MessagesSquare size={18} />,
     count: "5.2k",
@@ -30,7 +30,7 @@ const categoriesList = [
     color: "text-yellow-400"
   },
   {
-    id: "Hardware",
+    id: "hardware",
     label: "Phần cứng & Gear",
     icon: <Cpu size={18} />,
     count: "8.1k",

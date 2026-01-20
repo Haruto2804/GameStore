@@ -135,9 +135,15 @@ app.get('/games/reviews/:gameId', async (req, res) => {
 
 app.get('/api/community/posts', async (req, res) => {
   try {
-    const post = await CommunityPost.find()
-      .sort({ posted_at: -1 })
-    res.json(post);
+    const { category } = req.query;
+    let filtered = {};
+
+    if (category && category !== 'all') {
+      filtered.type = category;
+    }
+    const posts = await CommunityPost.find(filtered).sort({ posted_at: -1 });
+    res.json(posts)
+      .limit(5);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -193,7 +199,6 @@ app.get('/api/community/posts/:id', async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
-
 app.post('/api/community/posts', async (req, res) => {
   try {
     const post = await CommunityPost.create(req.body);

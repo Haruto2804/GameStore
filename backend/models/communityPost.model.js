@@ -29,6 +29,12 @@ const CommunityPostSchema = new mongoose.Schema(
     actions: {
       is_saved: { type: Boolean, default: false },
       can_share: { type: Boolean, default: true }
+    },
+    type: {
+      type: String,
+      default: 'qna',
+      enum: ['qna', 'guide', 'hardware'],
+      required: true
     }
   },
   {
