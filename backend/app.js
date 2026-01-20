@@ -136,21 +136,64 @@ app.get('/games/reviews/:gameId', async (req, res) => {
 app.get('/api/community/posts', async (req, res) => {
   try {
     const post = await CommunityPost.find()
-    .sort({posted_at: -1})
+      .sort({ posted_at: -1 })
     res.json(post);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 });
+app.patch('/api/community/posts/:id/likes', async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const updatedPost = await CommunityPost.findByIdAndUpdate(
+      postId,
+      { $inc: { 'stats.upvotes': 1 } },
+      { new: true }
+    );
+    res.status(200).json(updatedPost);
+  }
+  catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+})
+app.patch('/api/community/posts/:id/dislikes', async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const updatedPost = await CommunityPost.findByIdAndUpdate(
+      postId,
+      { $inc: { 'stats.upvotes': -1 } },
+      { new: true }
+    );
+    res.status(200).json(updatedPost);
+  }
+  catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+})
+app.patch('/api/community/posts/:id/views', async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const updatedPostViews = await CommunityPost.findByIdAndUpdate(
+      postId,
+      { $inc: { 'stats.views': 1 } },
+      { new: true }
+    )
+    res.status(200).json(updatedPostViews);
+  }
+  catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+})
 app.get('/api/community/posts/:id', async (req, res) => {
   try {
     const postId = req.params.id;
-  const post = await CommunityPost.findById(postId);
+    const post = await CommunityPost.findById(postId);
     res.json(post);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 });
+
 app.post('/api/community/posts', async (req, res) => {
   try {
     const post = await CommunityPost.create(req.body);

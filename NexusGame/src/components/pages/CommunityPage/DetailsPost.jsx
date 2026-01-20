@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { useParams } from "react-router";
 import axios from "axios";
+import { useCallback } from "react";
 // ... (giữ nguyên phần import)
 
 export function DetailsPost() {
@@ -18,6 +19,35 @@ export function DetailsPost() {
   const [post, setPost] = useState({});
   const { id } = useParams();
 
+
+  const handleLikePost = async () => {
+    try {
+      const resLike = await axios.patch(`http://localhost:3000/api/community/posts/${id}/likes`);
+      setPost(resLike.data);
+    }
+    catch (err) {
+      console.error("Không thể like bài viết:", err);
+    }
+  }
+  const handleDisLikePost = async () => {
+    try {
+      const resLike = await axios.patch(`http://localhost:3000/api/community/posts/${id}/dislikes`);
+      setPost(resLike.data);
+    }
+    catch (err) {
+      console.error("Không thể like bài viết:", err);
+    }
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const incrementView = useCallback(async () => {
+    try {
+      await axios.patch(`http://localhost:3000/api/community/posts/${id}/views`);
+      console.log("Đã cộng 1 view sau 60 giây xem!");
+    }
+    catch (err) {
+      console.error("Không thể cập nhật view bài viết:", err);
+    }
+  },[id])
   useEffect(() => {
     const fecthDetailsPost = async () => {
       try {
@@ -28,8 +58,11 @@ export function DetailsPost() {
       }
     };
     fecthDetailsPost();
-  }, [id]);
-  console.log('sdsd',post)
+    const timer = setTimeout(() => {
+      incrementView();
+    }, 60000)
+    return () => clearTimeout(timer);
+  }, [id, incrementView]);
   return (
     <div className="bg-bg-base mt-22">
       <div className="text-white max-w-5xl mx-auto p-4">
@@ -94,12 +127,16 @@ export function DetailsPost() {
         <div className="flex justify-between mt-5 rounded-lg border border-blue-900/50 bg-blue-800/30 p-4 text-blue-700 items-center">
           <div className="flex gap-7">
             <div className="flex items-center gap-1 bg-blue-900 rounded-lg p-1 w-fit">
-              <button className="p-2 hover:bg-[#3e5246] rounded-md text-[#9eb7a8] hover:text-blue-500">
+              <button
+                onClick={() => handleLikePost()}
+                className="p-2 hover:bg-[#3e5246] rounded-md text-[#9eb7a8] hover:text-blue-500">
                 <AiOutlineLike className="size-6 cursor-pointer" />
               </button>
               {/* Optional Chaining cho upvotes */}
               <span className="text-white font-bold px-2">{post?.stats?.upvotes || 0}</span>
-              <button className="p-2 hover:bg-[#3e5246] rounded-md text-[#9eb7a8] hover:text-red-400 transition-colors">
+              <button
+                onClick={() => handleDisLikePost()}
+                className="p-2 hover:bg-[#3e5246] rounded-md text-[#9eb7a8] hover:text-red-400 transition-colors">
                 <AiOutlineDislike className="size-6 cursor-pointer" />
               </button>
             </div>
@@ -110,7 +147,7 @@ export function DetailsPost() {
             </div>
           </div>
           {/* Lặp lại upvotes phía bên phải nếu cần */}
-          <p className="font-bold text-white">{post?.stats?.upvotes}</p>
+          <p className="font-bold text-white">{post?.stats?.upvotes} Upvotes</p>
         </div>
 
         <div className="w-full h-0.5 bg-gray-800 mt-5 mb-5"></div>
