@@ -12,36 +12,37 @@ import { GameLibraryPage } from './components/pages/GameLibraryPage/GameLibraryP
 import { Community } from './components/pages/CommunityPage/Community'
 import { DetailsPost } from './components/pages/CommunityPage/DetailsPost'
 import { Library } from './components/pages/LibraryPage/Library'
+import { CommunityContext } from './Context/CommunityContext'
+import { CommunityProvider } from './Context/CommunityData'
 function App() {
   return (
     <div className="bg-bg-base h-screen w-screen font-Rajdhani ">
       <div className="h-screen w-screen bg-bg-base flex flex-col max-w-8xl mx-auto">
-        <CartProvider>
-          <DataGameProvider>
-            <ScrollToTop />
-            <Header></Header>
-            <Routes>
-
-              <Route path="/" element={
-                <HomePage />
-              }></Route>
-              <Route path="/games" element={<GameLibraryPage />} />
-              <Route path="/games/:id" element={
-                <GameDetails />
-              }></Route>
-              <Route path="/community" element={<Community />} />
-              <Route path="/community/posts/:id" element={<DetailsPost />} />
-              <Route path="/genres"></Route>
-              <Route path="/platform"></Route>
-              <Route path="/discount" ></Route>
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/library" element={<Library />} />
-              <Route path="*" element={<NotFound />}></Route>
-            </Routes>
-          </DataGameProvider>
-
-        </CartProvider>
-
+        <CommunityProvider>
+          <CartProvider>
+            <DataGameProvider>
+              <ScrollToTop />
+              <Header></Header>
+              <Routes>
+                <Route path="/" element={
+                  <HomePage />
+                }></Route>
+                <Route path="/games" element={<GameLibraryPage />} />
+                <Route path="/games/:id" element={
+                  <GameDetails />
+                }></Route>
+                <Route path="/community" element={<Community />} />
+                <Route path="/community/posts/:id" element={<DetailsPost />} />
+                <Route path="/genres"></Route>
+                <Route path="/platform"></Route>
+                <Route path="/discount" ></Route>
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/library" element={<Library />} />
+                <Route path="*" element={<NotFound />}></Route>
+              </Routes>
+            </DataGameProvider>
+          </CartProvider>
+        </CommunityProvider>
 
 
 

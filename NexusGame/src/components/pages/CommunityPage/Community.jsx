@@ -2,15 +2,14 @@ import { CategoryForumList } from "./Forum/CategoryForumList";
 import { Forum } from "./Forum/Forum";
 import { RiCommunityFill } from "react-icons/ri";
 import { ForumLeaderBoard } from "./Forum/ForumLeaderBoard";
-import { useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { IoMdClose } from "react-icons/io";
+import { CommunityContext } from "../../../Context/CommunityContext";
 import axios from "axios";
 
 export function Community() {
   // 1. States cho dữ liệu bài viết
-  const [category, setCategory] = useState("all");
   const [postCategory, setPostCategory] = useState("");
-  const [communityPosts, setCommunityPosts] = useState([]);
   // 2. States cho Modal và Form
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [tagInput, setTagInput] = useState(""); // Lưu chữ đang gõ ở ô tag
@@ -19,24 +18,7 @@ export function Community() {
     title: "",
     content: "",
   });
-
-  // Fetch dữ liệu từ API
-  useEffect(() => {
-    const fetchCommunityPosts = async () => {
-      try {
-        const url = category === 'all'
-          ? `http://localhost:3000/api/community/posts`
-          : `http://localhost:3000/api/community/posts?category=${category}`;
-        const res = await axios.get(url);
-        setCommunityPosts(res.data);
-        console.log(res.data);
-      } catch (err) {
-        console.error('Lỗi khi fetch community Posts: ', err);
-      }
-    };
-    fetchCommunityPosts();
-  }, [category]);
-
+  const { category, communityPosts, setCategory,setCommunityPosts } = useContext(CommunityContext);
   // 3. Logic xử lý Tag (Biến chữ thành #TAG)
   const handleTagKeyDown = (e) => {
 
@@ -89,7 +71,6 @@ export function Community() {
       console.error("Lỗi khi đăng bài:", err);
     }
   };
-  console.log(category);
   return (
     <div className="bg-bg-base">
       <div className="bg-bg-base mt-22 p-4 min-h-screen relative">

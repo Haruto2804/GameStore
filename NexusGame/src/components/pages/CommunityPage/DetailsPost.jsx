@@ -17,8 +17,6 @@ export function DetailsPost() {
   const [comment, setComment] = useState("");
   const [post, setPost] = useState({});
   const { id } = useParams();
-
-
   const handleLikePost = async () => {
     try {
       const resLike = await axios.patch(`http://localhost:3000/api/community/posts/${id}/likes`);
@@ -61,6 +59,7 @@ export function DetailsPost() {
     }, 60000)
     return () => clearTimeout(timer);
   }, [id, incrementView]);
+  console.log(post);
   return (
     <div className="bg-bg-base mt-22">
       <div className="text-white max-w-5xl mx-auto p-4">

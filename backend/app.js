@@ -135,15 +135,22 @@ app.get('/games/reviews/:gameId', async (req, res) => {
 
 app.get('/api/community/posts', async (req, res) => {
   try {
-    const { category } = req.query;
+    const { category, page = 1 } = req.query;
     let filtered = {};
-
+    const limit = 5;
+    const skip = (Number(page) - 1) * limit;
     if (category && category !== 'all') {
       filtered.type = category;
     }
-    const posts = await CommunityPost.find(filtered).sort({ posted_at: -1 });
-    res.json(posts)
-      .limit(5);
+    const posts = await CommunityPost.find(filtered)
+      .sort({ posted_at: -1 })
+      .skip(skip)
+      .limit(limit);
+    const totalPosts = await CommunityPost.countDocuments(filtered);
+    res.json({
+      posts,
+      totalPages: Math.ceil(totalPosts / limit),
+    })
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
