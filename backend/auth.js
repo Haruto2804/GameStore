@@ -12,6 +12,7 @@ router.post('/register', async (req, res) => {
         message: "Tài khoản đã tồn tại không thể lưa",
       });
     }
+    
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     const newAccount = await AccountModel.create({
       username: username.trim(),
