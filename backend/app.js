@@ -6,7 +6,8 @@ const mongoose = require('mongoose');
 const Game = require('./models/game.model.js');
 const Review = require('./models/review.model.js');
 const CommunityPost = require('./models/communityPost.model.js');
-
+const AccountModel = require('./models/Account.model.js');
+const authRoute = require('./auth.js')
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -214,3 +215,6 @@ app.post('/api/community/posts', async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
+
+
+app.use('/api/auth',authRoute);

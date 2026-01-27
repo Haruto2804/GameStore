@@ -42,7 +42,7 @@ export function Community() {
   const removeTag = (indexToRemove) => {
     setTags(tags.filter((_, index) => index !== indexToRemove));
   };
-
+  console.log(category)
   // 4. Logic gửi bài viết
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -74,7 +74,7 @@ export function Community() {
   return (
     <div className="bg-bg-base">
       <div className="bg-bg-base mt-22 p-4 min-h-screen relative">
-        <div className="bg-bg-base max-w-6xl mx-auto px-6 flex flex-col">
+        <div className="bg-bg-base max-w-6xl mx-auto px-6 fleax flex-col">
           {/* Header Section */}
           <p className="text-3xl flex items-center gap-3 text-white font-bold">
             <RiCommunityFill className="text-green-500" />

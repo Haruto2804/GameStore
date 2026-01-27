@@ -14,6 +14,7 @@ import { DetailsPost } from './components/pages/CommunityPage/DetailsPost'
 import { Library } from './components/pages/LibraryPage/Library'
 import { CommunityContext } from './Context/CommunityContext'
 import { CommunityProvider } from './Context/CommunityData'
+import { Register } from './components/pages/AuthPage/Register'
 function App() {
   return (
     <div className="bg-bg-base h-screen w-screen font-Rajdhani ">
@@ -38,7 +39,9 @@ function App() {
                 <Route path="/discount" ></Route>
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/library" element={<Library />} />
+                <Route path = "/api/auth/register" element = {<Register />}></Route>
                 <Route path="*" element={<NotFound />}></Route>
+                x
               </Routes>
             </DataGameProvider>
           </CartProvider>
