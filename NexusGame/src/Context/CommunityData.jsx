@@ -1,6 +1,6 @@
 import { CommunityContext } from "./CommunityContext";
 import { useState, useEffect, useMemo } from "react";
-import axios from 'axios'
+import axiosClient from "../AxiosClient";
 export const CommunityProvider = ({ children }) => {
   // Fetch dữ liệu từ API
   const [communityPosts, setCommunityPosts] = useState([]);
@@ -10,7 +10,7 @@ export const CommunityProvider = ({ children }) => {
   useEffect(() => {
     const fetchCommunityPosts = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/api/community/posts`, {
+        const res = await axiosClient.get(`/community/posts`, {
           params: {
             category: category !== 'all' ? category : undefined,
             page: currentPage

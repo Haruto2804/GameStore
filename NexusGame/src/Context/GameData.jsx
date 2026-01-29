@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import axios from "axios";
 import { DataGameContext } from "./GameContext";
+import axiosClient from "../AxiosClient";
 
 export const DataGameProvider = ({ children }) => {
   const [gameData, setGameData] = useState([]);
@@ -9,7 +10,7 @@ export const DataGameProvider = ({ children }) => {
   // Dùng useCallback để hàm không bị tạo lại mỗi lần render
   const fetchGameData = useCallback(async () => {
     try {
-      const response = await axios.get('http://localhost:3000/games');
+      const response = await axiosClient.get('/games');
       setGameData(response.data);
     } catch (error) {
       console.error("Lỗi khi lấy dữ liệu game:", error);

@@ -15,6 +15,7 @@ import { Library } from './components/pages/LibraryPage/Library'
 import { CommunityContext } from './Context/CommunityContext'
 import { CommunityProvider } from './Context/CommunityData'
 import { Register } from './components/pages/AuthPage/Register'
+import { Login } from './components/pages/AuthPage/Login'
 function App() {
   return (
     <div className="bg-bg-base h-screen w-screen font-Rajdhani ">
@@ -40,6 +41,7 @@ function App() {
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/library" element={<Library />} />
                 <Route path = "/api/auth/register" element = {<Register />}></Route>
+                <Route path = "/api/auth/login" element = {<Login />}></Route>
                 <Route path="*" element={<NotFound />}></Route>
                 x
               </Routes>

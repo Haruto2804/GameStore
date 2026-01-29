@@ -8,6 +8,7 @@ import { TbShoppingCartFilled } from "react-icons/tb";
 import { CartContext } from '../../../Context/CartContext.js';
 import { FaHeart } from "react-icons/fa";
 import axios from 'axios';
+import axiosClient from '../../../AxiosClient.js';
 const categories = [
   {
     id: "all",
@@ -76,9 +77,9 @@ export function HomePage() {
   const fetchDataGame = useCallback(async () => {
     try {
       const [top1Res, featuredRes, bestDiscountRes] = await Promise.all([
-        axios.get('http://localhost:3000/games/top-rated'),
-        axios.get('http://localhost:3000/games/featured'),
-        axios.get('http://localhost:3000/games/best_discount'),
+        axiosClient.get('/games/top-rated'),
+        axiosClient.get('/games/featured'),
+        axiosClient.get('/games/best_discount'),
 
       ])
       setTop1Game(top1Res.data);

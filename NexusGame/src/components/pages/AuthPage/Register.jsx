@@ -3,11 +3,9 @@ import { FaUser } from "react-icons/fa6";
 import { FaShieldAlt } from "react-icons/fa";
 import { FaArrowRight } from "react-icons/fa6";
 import { useState } from "react";
+import { Link } from "react-router";
 import axios from "axios";
-const validateEmail = (email) => {
-  const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-  return regex.test(email); // Trả về true hoặc false
-};
+import { validators } from "../../../utils";
 export function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -20,12 +18,16 @@ export function Register() {
       alert("Vui lòng đồng ý với điều khoản dịch vụ!");
       return;
     }
-    if (!username) {
+    if (!validators.username(username)) {
       alert("Vui lòng nhập username!");
       return;
     }
-    if (!validateEmail(email)) {
+    if (!validators.email(email)) {
       alert("Email không đúng định dạng, vui lòng kiểm tra lại!");
+      return; // Dừng hàm tại đây, không gọi API nữa
+    }
+    if (!validators.password(password)) {
+      alert("Mật khẩu phải từ 6 đến 50 kí tự");
       return; // Dừng hàm tại đây, không gọi API nữa
     }
     if (password !== confirmPassword) {
@@ -43,7 +45,7 @@ export function Register() {
       alert(response.data.message);
     }
     catch (err) {
-      alert(err?.response?.data.detail);
+      alert(err?.response?.data.message);
     }
   }
   return (
@@ -204,7 +206,7 @@ export function Register() {
 
 
           <p className="text-gray-500 text-sm">Đã có tài khoản?
-            <span className="text-blue-500 cursor-pointer transition-all duration-300 hover:underline">  Quay trở lại đăng nhập</span>
+            <Link to = "/api/auth/login" className="text-blue-500 cursor-pointer transition-all duration-300 hover:underline">  Quay trở lại đăng nhập</Link>
           </p>
         </div>
       </div>

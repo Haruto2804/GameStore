@@ -11,8 +11,8 @@ import { CartContext } from "../../../Context/CartContext";
 import { Link } from "react-router";
 import { ReviewForm } from "./ReviewForm";
 import { ReviewList } from "./ReviewList";
-import axios from "axios";
 import { RiStarFill } from "react-icons/ri";
+import axiosClient from "../../../AxiosClient";
 const formatDate = (dateString) => {
   if (!dateString) return "";
   const date = new Date(dateString);
@@ -27,8 +27,8 @@ export function GameDetails() {
   const fetchReviews = useCallback(async () => {
     try {
       const [allRes, resTop] = await Promise.all([
-        axios.get(`http://localhost:3000/games/reviews/${id}`),
-        axios.get(`http://localhost:3000/games/reviews/top/${id}`)
+        axiosClient.get(`/games/reviews/${id}`),
+        axiosClient.get(`/games/reviews/top/${id}`)
       ])
       setReviews(allRes.data);
       setTopReviews(resTop.data);
@@ -43,7 +43,6 @@ export function GameDetails() {
   useEffect(() => {
     fetchReviews();
   }, [fetchReviews]);
-  console.log(topReviews);
   const item = gameData.find((item) => item._id == id);
 
   return (

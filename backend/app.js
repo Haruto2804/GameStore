@@ -1,17 +1,21 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-
+const cookieParser = require('cookie-parser');
 // Import Models
 const Game = require('./models/game.model.js');
-const Review = require('./models/review.model.js');
 const CommunityPost = require('./models/communityPost.model.js');
 const AccountModel = require('./models/Account.model.js');
+const Review = require('./models/review.model.js')
 const authRoute = require('./auth.js')
+const { protect } = require('./authMiddleware.js');
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}))
 app.use(express.json());
-
+app.use(cookieParser());
 // Kết nối Database
 mongoose.connect('mongodb://localhost:27017/game')
   .then(() => {
@@ -25,7 +29,7 @@ mongoose.connect('mongodb://localhost:27017/game')
 // ==========================================
 
 // Lấy danh sách tất cả game
-app.get('/games', async (req, res) => {
+app.get('/api/games', async (req, res) => {
   try {
     const games = await Game.find().sort({ game_title: 1 });
     res.json(games);
@@ -35,7 +39,7 @@ app.get('/games', async (req, res) => {
 });
 
 // Lọc game theo thể loại
-app.get('/games/genre/:id', async (req, res) => {
+app.get('/api/games/genre/:id', async (req, res) => {
   try {
     const query = req.params.id === 'all' ? {} : { categoryId: req.params.id };
     const games = await Game.find(query);
@@ -46,7 +50,7 @@ app.get('/games/genre/:id', async (req, res) => {
 });
 
 // Lấy game có metascore cao nhất
-app.get('/games/top-rated', async (req, res) => {
+app.get('/api/games/top-rated', async (req, res) => {
   try {
     const topGame = await Game.findOne().sort({ metascore: -1 });
     res.json(topGame);
@@ -56,7 +60,7 @@ app.get('/games/top-rated', async (req, res) => {
 });
 
 // Lấy 5 game nổi bật
-app.get('/games/featured', async (req, res) => {
+app.get('/api/games/featured', async (req, res) => {
   try {
     const featured = await Game.find()
       .select('game_title pricing media metascore genres')
@@ -69,7 +73,7 @@ app.get('/games/featured', async (req, res) => {
 });
 
 // Lấy 5 game giảm giá sâu nhất
-app.get('/games/best_discount', async (req, res) => {
+app.get('/api/games/best_discount', async (req, res) => {
   try {
     const bestDiscounts = await Game.find({ "pricing.discount_percent": { $gt: 0 } })
       .sort({ "pricing.discount_percent": -1 })
@@ -85,7 +89,7 @@ app.get('/games/best_discount', async (req, res) => {
 // ==========================================
 
 // 1. Gửi nhận xét mới
-app.post('/games/reviews', async (req, res) => {
+app.post('/api/games/reviews', async (req, res) => {
   try {
     const review = await Review.create(req.body);
     res.status(201).json({ message: "Gửi nhận xét thành công!", reviewId: review._id });
@@ -95,7 +99,7 @@ app.post('/games/reviews', async (req, res) => {
 });
 
 // 2. Lấy toàn bộ reviews trong database (không lọc)
-app.get('/games/reviews', async (req, res) => {
+app.get('/api/games/reviews', async (req, res) => {
   try {
     const reviews = await Review.find();
     res.json(reviews);
@@ -106,7 +110,7 @@ app.get('/games/reviews', async (req, res) => {
 
 // 3. Lấy TOP reviews của một game (Rating cao nhất, mới nhất)
 // QUAN TRỌNG: Route này phải nằm TRÊN route có tham số :gameId chung
-app.get('/games/reviews/top/:gameId', async (req, res) => {
+app.get('/api/games/reviews/top/:gameId', async (req, res) => {
   try {
     const { gameId } = req.params;
     const reviews = await Review.find({ gameId: gameId })
@@ -119,7 +123,7 @@ app.get('/games/reviews/top/:gameId', async (req, res) => {
 });
 
 // 4. Lấy tất cả reviews của một game (Sắp xếp mới nhất lên đầu)
-app.get('/games/reviews/:gameId', async (req, res) => {
+app.get('/api/games/reviews/:gameId', async (req, res) => {
   try {
     const { gameId } = req.params;
     const reviews = await Review.find({ gameId: gameId }).sort({ createdAt: -1 });
@@ -134,7 +138,7 @@ app.get('/games/reviews/:gameId', async (req, res) => {
 // ==========================================
 
 
-app.get('/api/community/posts', async (req, res) => {
+app.get('/api/community/posts',async (req, res) => {
   try {
     const { category, page = 1 } = req.query;
     let filtered = {};
@@ -217,4 +221,4 @@ app.post('/api/community/posts', async (req, res) => {
 });
 
 
-app.use('/api/auth',authRoute);
+app.use('/api/auth', authRoute);

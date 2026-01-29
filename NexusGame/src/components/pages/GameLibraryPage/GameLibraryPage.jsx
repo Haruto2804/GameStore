@@ -4,6 +4,7 @@ import { CardGame } from '../HomePage/CardGame';
 // Đảm bảo file GameFilters.jsx tồn tại hoặc đặt component ở dưới nhưng xóa dòng import này
 import { GameFilters } from './GameFilters';
 import { IoSearchOutline } from "react-icons/io5";
+import axiosClient from '../../../AxiosClient';
 
 const categories = [
   { id: "all", genre: "Tất cả" },
@@ -27,7 +28,7 @@ export function GameLibraryPage() {
     const fetchAllGames = async () => {
       try {
         setLoading(true);
-        const res = await axios.get('http://localhost:3000/games');
+        const res = await axiosClient.get('/games');
         // Đảm bảo res.data là một mảng
         const data = Array.isArray(res.data) ? res.data : [];
         setAllGames(data);

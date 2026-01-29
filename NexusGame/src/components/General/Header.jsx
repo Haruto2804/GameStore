@@ -1,5 +1,5 @@
 import LogoGame from '../../../public/logo.svg'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { SearchBar } from './SearchBar'
 import { IconButton } from "./IconButton";
@@ -10,6 +10,7 @@ import { TfiMenu } from "react-icons/tfi";
 import { IoMdClose } from "react-icons/io";
 import { Menu } from './Menu';
 import { CartContext } from '../../Context/CartContext';
+
 const headerLink = [
   {
     title: "Trang chủ",
@@ -25,13 +26,12 @@ const headerLink = [
   },
   {
     title: "Cộng đồng",
-    path:"/community"
+    path: "/community"
   }
 ]
 export function Header() {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const { totalQuantity } = useContext(CartContext);
-  console.log(totalQuantity)
   return (
     <div className="fixed top-0 left-0 right-0 bg-bg-app p-2 flex items-center justify-between select-none z-100">
       <div

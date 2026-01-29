@@ -1,7 +1,7 @@
-import axios from "axios";
+import axiosClient from "../../../AxiosClient";
 import { useState } from "react";
 
-export function ReviewForm({ fetchReviews,id, onReviewAdded }) {
+export function ReviewForm({ fetchReviews, id, onReviewAdded }) {
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(5); // Mặc định là 5 sao
   const [hover, setHover] = useState(0);   // Hiệu ứng khi di chuột qua sao
@@ -10,7 +10,7 @@ export function ReviewForm({ fetchReviews,id, onReviewAdded }) {
     if (!comment.trim()) return alert("Vui lòng nhập nội dung nhận xét!");
 
     try {
-      const response = await axios.post('http://localhost:3000/games/reviews', {
+      const response = await axiosClient.post('/games/reviews', {
         gameId: id,
         userName: "Guest",
         rating: rating, // Gửi số sao đã chọn thay vì số 5 cố định
