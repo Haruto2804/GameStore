@@ -19,6 +19,7 @@ import { Login } from './components/pages/AuthPage/Login'
 import { useState, useEffect } from 'react'
 import axiosClient from './AxiosClient'
 import { AuthProvider } from './Context/AuthHandle'
+import { User } from './components/pages/UserPage/User'
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -67,6 +68,7 @@ function App() {
                   <Route path="/library" element={<Library />} />
                   <Route path="/register" element={<Register />}></Route>
                   <Route path="/login" element={<Login />}></Route>
+                  <Route path="/user" element={<User />}></Route>
                   <Route path="*" element={<NotFound />}></Route>
                   x
                 </Routes>
