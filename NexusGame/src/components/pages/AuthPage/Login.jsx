@@ -3,15 +3,19 @@ import { TbDeviceGamepad } from "react-icons/tb";
 import { FaUser } from "react-icons/fa6";
 import { FaShieldAlt } from "react-icons/fa";
 import { FaArrowRight } from "react-icons/fa6";
-import { Link } from "react-router";
-import { useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { useContext, useState } from "react";
 import { validators } from "../../../utils";
-import axios from "axios";
+import axiosClient from "../../../AxiosClient";
+import { AuthContext } from "../../../Context/AuthContext";
 export function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
   const registerAccount = async (e) => {
     e.preventDefault(); // QUAN TRỌNG: Chặn load lại trang
+
     if (!validators.username(username)) {
       alert("Vui lòng nhập username!");
       return;
@@ -26,19 +30,19 @@ export function Login() {
     }
     let response;
     try {
-      response = await axios.post('http://localhost:3000/api/auth/login', account,
-        {
-          withCredentials: true
-        }
-      );
-      localStorage.setItem('is_logged', 'true');
+      response = await axiosClient.post('/auth/login', account);
+
+      navigate("/")
+      login();
       alert(response.data.message);
+
     }
     catch (err) {
       alert(err?.response?.data.message);
     }
 
   }
+
   return (
     <div className="bg-bg-base">
       <div className="max-w-xl mt-25 text-white mx-auto p-4">
@@ -111,7 +115,8 @@ export function Login() {
             </div>
             <button
               className="active:scale-98 transition-all duration-100 text-white text-lg shadow-blue-500 bg-blue-800 rounded-lg flex items-center justify-center w-full p-4 cursor-pointer">
-              <div className="flex items-center gap-2 ">
+              <div
+                className="flex items-center gap-2 ">
                 <span>Sign In</span>
                 <FaArrowRight className="" />
               </div>

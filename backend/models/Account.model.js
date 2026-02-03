@@ -9,7 +9,7 @@ const AccountSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: [6,'Mật khẩu phải từ 6 ký tự trở lên']
+    minlength: [6, 'Mật khẩu phải từ 6 ký tự trở lên']
   },
   email: {
     type: String,
@@ -19,6 +19,11 @@ const AccountSchema = new mongoose.Schema({
     trim: true,
     match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/, 'Vui lòng nhập đúng định dạng email'],
     maxlength: [50, 'Email quá dài, vui lòng kiểm tra lại']
+  },
+  displayName: {
+    type: String,
+    required: true,
+    maxlength: [50, 'Tên hiển thị quá dài, vui lòng đặt sao cho ngắn lại!']
   }
 },
   {

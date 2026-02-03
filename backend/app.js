@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 // Import Models
 const Game = require('./models/game.model.js');
 const CommunityPost = require('./models/communityPost.model.js');
@@ -89,7 +90,7 @@ app.get('/api/games/best_discount', async (req, res) => {
 // ==========================================
 
 // 1. Gửi nhận xét mới
-app.post('/api/games/reviews', async (req, res) => {
+app.post('/api/games/reviews', protect, async (req, res) => {
   try {
     const review = await Review.create(req.body);
     res.status(201).json({ message: "Gửi nhận xét thành công!", reviewId: review._id });
@@ -138,7 +139,7 @@ app.get('/api/games/reviews/:gameId', async (req, res) => {
 // ==========================================
 
 
-app.get('/api/community/posts',async (req, res) => {
+app.get('/api/community/posts', async (req, res) => {
   try {
     const { category, page = 1 } = req.query;
     let filtered = {};
@@ -160,7 +161,7 @@ app.get('/api/community/posts',async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-app.patch('/api/community/posts/:id/likes', async (req, res) => {
+app.patch('/api/community/posts/:id/likes', protect, async (req, res) => {
   try {
     const postId = req.params.id;
     const updatedPost = await CommunityPost.findByIdAndUpdate(
@@ -174,7 +175,7 @@ app.patch('/api/community/posts/:id/likes', async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 })
-app.patch('/api/community/posts/:id/dislikes', async (req, res) => {
+app.patch('/api/community/posts/:id/dislikes', protect, async (req, res) => {
   try {
     const postId = req.params.id;
     const updatedPost = await CommunityPost.findByIdAndUpdate(
@@ -188,7 +189,7 @@ app.patch('/api/community/posts/:id/dislikes', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 })
-app.patch('/api/community/posts/:id/views', async (req, res) => {
+app.patch('/api/community/posts/:id/views', protect, async (req, res) => {
   try {
     const postId = req.params.id;
     const updatedPostViews = await CommunityPost.findByIdAndUpdate(
@@ -211,9 +212,13 @@ app.get('/api/community/posts/:id', async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
-app.post('/api/community/posts', async (req, res) => {
+app.post('/api/community/posts', protect, async (req, res) => {
   try {
-    const post = await CommunityPost.create(req.body);
+    console.log(req.body)
+    const post = await CommunityPost.create({
+      ...req.body,
+      author: req.user.id
+    });
     res.status(201).json(post);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -222,3 +227,23 @@ app.post('/api/community/posts', async (req, res) => {
 
 
 app.use('/api/auth', authRoute);
+
+app.get('/api/auth/me', async (req, res) => {
+  const token = req.cookies.accessToken;
+  if (!token) {
+    return res.status(401).json({ message: "Chưa đăng nhập" });
+  }
+  try {
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
+    const foundUser = await AccountModel.findOne({ _id: verified.id });
+    res.status(200).json({
+      id: foundUser.id,
+      username: foundUser.username,
+      email: foundUser.email,
+      displayName: foundUser.displayName
+    })
+  }
+  catch (err) {
+    res.status(400).json({ message: "Token không hợp lệ" });
+  }
+})

@@ -6,6 +6,7 @@ import { useContext, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { CommunityContext } from "../../../Context/CommunityContext";
 import axios from "axios";
+import axiosClient from "../../../AxiosClient";
 
 export function Community() {
   // 1. States cho dữ liệu bài viết
@@ -42,7 +43,6 @@ export function Community() {
   const removeTag = (indexToRemove) => {
     setTags(tags.filter((_, index) => index !== indexToRemove));
   };
-  console.log(category)
   // 4. Logic gửi bài viết
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -51,14 +51,13 @@ export function Community() {
       content: {
         text: formData.content
       },
-      author: "Haruto",
       tags: tags, // Mảng các tag đã nhập
       type: postCategory
     };
 
     try {
       console.log("Dữ liệu gửi lên server:", finalData);
-      const res = await axios.post('http://localhost:3000/api/community/posts', finalData);
+      const res = await axiosClient.post('/community/posts', finalData);
 
       // Sau khi gửi thành công:
       setIsModalOpen(false);

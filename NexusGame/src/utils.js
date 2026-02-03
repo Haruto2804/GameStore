@@ -5,4 +5,6 @@ export const validators = {
   email: (val) => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,50})+$/.test(val),
 
   password: (val) => val.length >= 6 && val.length <= 50,
+  
+  displayName: (val) => val && val.length >= 6 && val.length <= 50,
 }

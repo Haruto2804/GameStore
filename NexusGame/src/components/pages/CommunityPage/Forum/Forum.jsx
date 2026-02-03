@@ -13,7 +13,6 @@ export function Forum({ communityPosts }) {
       </div>
     );
   }
-  console.log(communityPosts)
   return (
     <div className="flex-1">
       <div className="flex flex-col gap-5">

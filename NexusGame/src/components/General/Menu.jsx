@@ -4,9 +4,8 @@ export function Menu({ headerLink }) {
       <div className="flex flex-col gap-3">
         {headerLink.map((item) => {
           return (
-            <div className="w-fit text-nowrap group ">
-              <p key={item.title}
-                className={`text-white cursor-pointer 
+            <div key={item.title} className="w-fit text-nowrap group ">
+              <p className={`text-white cursor-pointer 
               font-bold group-hover:text-green-500 transition-all duration-300
               `}>{item.title}</p>
               <div className="h-0.5 rounded-full w-0 mx-auto group-hover:w-full bg-linear-to-r from-blue-500 to-green-500 transition-all duration-300"></div>

@@ -31,7 +31,17 @@ const validationRegister = (req, res, next) => {
       .messages({
         'string.email': 'Email không đúng định dạng',
         'any.required': 'Vui lòng nhập email'
-      })
+      }),
+    displayName: Joi.string()
+      .required()
+      .min(6)
+      .max(50)
+      .messages({
+        'string.min': 'Tên hiển thị phải có ít nhất 6 kí tự!',
+        'string.empty': 'Tên hiển thị không được để trống!',
+        'string.max': 'Tên hiển thị tối đa 50 kí tự!',
+        'any.required': 'Vui lòng nhập tên hiển thị!'
+      }),
   })
   const { error } = schema.validate(req.body, { abortEarly: false })
   if (error) {

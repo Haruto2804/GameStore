@@ -10,16 +10,16 @@ import { CommentList } from "./CommentList";
 import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { useParams } from "react-router";
-import axios from "axios";
 import { useCallback } from "react";
-
-export function DetailsPost() {
+import axiosClient from "../../../AxiosClient";
+export function DetailsPost({user}) {
+  console.log(user)
   const [comment, setComment] = useState("");
   const [post, setPost] = useState({});
   const { id } = useParams();
   const handleLikePost = async () => {
     try {
-      const resLike = await axios.patch(`http://localhost:3000/api/community/posts/${id}/likes`);
+      const resLike = await axiosClient.patch(`/community/posts/${id}/likes`);
       setPost(resLike.data);
     }
     catch (err) {
@@ -28,7 +28,7 @@ export function DetailsPost() {
   }
   const handleDisLikePost = async () => {
     try {
-      const resLike = await axios.patch(`http://localhost:3000/api/community/posts/${id}/dislikes`);
+      const resLike = await axiosClient.patch(`/community/posts/${id}/dislikes`);
       setPost(resLike.data);
     }
     catch (err) {
@@ -37,7 +37,7 @@ export function DetailsPost() {
   }
   const incrementView = useCallback(async () => {
     try {
-      await axios.patch(`http://localhost:3000/api/community/posts/${id}/views`);
+      await axiosClient.patch(`/community/posts/${id}/views`);
       console.log("Đã cộng 1 view sau 60 giây xem!");
     }
     catch (err) {
@@ -47,7 +47,7 @@ export function DetailsPost() {
   useEffect(() => {
     const fecthDetailsPost = async () => {
       try {
-        const postRes = await axios.get(`http://localhost:3000/api/community/posts/${id}`);
+        const postRes = await axiosClient.get(`/community/posts/${id}`);
         setPost(postRes.data);
       } catch (err) {
         console.error("Lỗi fetch details:", err);
@@ -59,7 +59,6 @@ export function DetailsPost() {
     }, 60000)
     return () => clearTimeout(timer);
   }, [id, incrementView]);
-  console.log(post);
   return (
     <div className="bg-bg-base mt-22">
       <div className="text-white max-w-5xl mx-auto p-4">
@@ -83,7 +82,7 @@ export function DetailsPost() {
           <div className="flex gap-5 cursor-pointer group items-center">
             <img src={HarutoPicture} className="group-hover:ring-3 group-hover:ring-blue-500 rounded-full size-12 object-cover transition-all" alt="avatar" />
             <div className="flex flex-col">
-              <p className="font-bold group-hover:text-blue-500">Haruto</p>
+              <p className="font-bold group-hover:text-blue-500">{user?.displayName}</p>
               <div className="flex gap-2 text-blue-500/70">
                 {/* Optional Chaining cho ngày tháng */}
                 <p>{post?.formatted_date}</p>

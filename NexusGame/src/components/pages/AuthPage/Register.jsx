@@ -3,12 +3,14 @@ import { FaUser } from "react-icons/fa6";
 import { FaShieldAlt } from "react-icons/fa";
 import { FaArrowRight } from "react-icons/fa6";
 import { useState } from "react";
-import { Link } from "react-router";
-import axios from "axios";
+import { Link, Navigate } from "react-router";
 import { validators } from "../../../utils";
+import axiosClient from "../../../AxiosClient";
+import { useNavigate } from "react-router";
 export function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [checkedPolicy, setCheckedPolicy] = useState(false);
@@ -18,8 +20,12 @@ export function Register() {
       alert("Vui lòng đồng ý với điều khoản dịch vụ!");
       return;
     }
+    if (!validators.displayName(displayName)) {
+      alert("Tên hiển thị phải có ít nhất 6-50 kí tự!");
+      return;
+    }
     if (!validators.username(username)) {
-      alert("Vui lòng nhập username!");
+      alert("Username phải có ít nhất từ 2-20 kí tự");
       return;
     }
     if (!validators.email(email)) {
@@ -34,15 +40,19 @@ export function Register() {
       alert("Mật khẩu xác nhận không khớp!");
       return;
     }
+
     const newAccount = {
       username: username.trim(),
       password: password,
       email: email.trim(),
+      displayName: displayName.trim()
     }
+
     let response;
     try {
-      response = await axios.post('http://localhost:3000/api/auth/register', newAccount);
+      response = await axiosClient.post('/auth/register', newAccount);
       alert(response.data.message);
+      Navigate("/login")
     }
     catch (err) {
       alert(err?.response?.data.message);
@@ -63,6 +73,29 @@ export function Register() {
             <p className="text-blue-500 shadow-blue-700 text-md">Gia nhập kỉ nguyên kĩ thuật số và tìm game yêu thích của bạn!</p>
           </div>
           <form onSubmit={submitAccount} className="w-full flex flex-col gap-3">
+            <div>
+              <p className="font-bold mb-2 text-blue-100">Tên hiển thị</p>
+              <div className="relative w-full group">
+                <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-300/60 group-focus-within:text-blue-400 transition-colors duration-300 z-10" />
+
+                <input
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  type="text"
+                  placeholder="Haruto..."
+                  className="
+      w-full p-4 pl-12 rounded-lg outline-none transition-all duration-300
+      /* Hiệu ứng kính */
+      bg-blue-950/30 backdrop-blur-md 
+      /* Viền mặc định */
+      border border-blue-500/30 text-blue-100 placeholder:text-blue-300/50
+      /* Hiệu ứng khi focus */
+      focus:border-blue-400 focus:bg-blue-900/40 
+      focus:shadow-[0_0_15px_rgba(59,130,246,0.3)]
+    "
+                />
+              </div>
+            </div>
             <div>
               <p className="font-bold mb-2 text-blue-100">Username</p>
               <div className="relative w-full group">
@@ -206,7 +239,7 @@ export function Register() {
 
 
           <p className="text-gray-500 text-sm">Đã có tài khoản?
-            <Link to = "/api/auth/login" className="text-blue-500 cursor-pointer transition-all duration-300 hover:underline">  Quay trở lại đăng nhập</Link>
+            <Link to="/login" className="text-blue-500 cursor-pointer transition-all duration-300 hover:underline">  Quay trở lại đăng nhập</Link>
           </p>
         </div>
       </div>

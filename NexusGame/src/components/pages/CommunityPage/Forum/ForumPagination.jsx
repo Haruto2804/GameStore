@@ -7,7 +7,6 @@ export function ForumPagination() {
   for (let i = 1; i <= totalPages; i++) {
     pageNumbers.push(i);
   }
-  console.log(posts, totalPages, currentPage);
   return (
     <div className="p-6 bg-gray-950 text-white">
       {/* 1. Test hiển thị bài viết */}

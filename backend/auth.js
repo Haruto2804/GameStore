@@ -4,11 +4,11 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 
 const AccountModel = require('./models/Account.model.js');
-const { validationRegister,validationLogin } = require('./authValidation.js')
+const { validationRegister, validationLogin } = require('./authValidation.js')
 const saltRounds = 10; // Độ phức tạp của mã hóa (10 là tiêu chuẩn)
 router.post('/register', validationRegister, async (req, res) => {
   try {
-    const { username, password, email } = req.body;
+    const { username, password, email, displayName } = req.body;
     const accountIsExists = await AccountModel.findOne({ username: username });
     if (accountIsExists) {
       return res.status(400).json({
@@ -20,7 +20,8 @@ router.post('/register', validationRegister, async (req, res) => {
     const newAccount = await AccountModel.create({
       username: username.trim(),
       password: hashedPassword,
-      email: email.trim()
+      email: email.trim(),
+      displayName: displayName.trim()
     })
     res.status(200).json({
       message: "Đăng kí tài khoản thành công",
@@ -34,9 +35,9 @@ router.post('/register', validationRegister, async (req, res) => {
     });
   }
 })
-router.post('/login',validationLogin, async (req, res) => {
+router.post('/login', validationLogin, async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, displayName } = req.body;
     const user = await AccountModel.findOne({ username: username.trim() });
     if (!user) {
       return res.status(401).json({ message: "Tài khoản không tồn tại!" });
@@ -45,21 +46,21 @@ router.post('/login',validationLogin, async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ message: "Mật khẩu không chính xác!" });
     }
-    console.log(process.env.JWT_SECRET)
     const token = jwt.sign(
       {
         id: user._id,
-        username: user.username
+        username: user.username,
+        displayName: user.displayName,
+        email: user.email
       },
       process.env.JWT_SECRET,
       { expiresIn: '1d' }
     )
-    console.log(token)
-    res.cookie('accessToken',token, {
+    res.cookie('accessToken', token, {
       httpOnly: true,
       secure: false,
       sameSite: 'Lax',
-      maxAge: 24*60*60*1000
+      maxAge: 24 * 60 * 60 * 1000
     })
     res.status(200).json({
       message: "Đăng nhập thành công",
