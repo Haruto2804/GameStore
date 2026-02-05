@@ -6,14 +6,13 @@ import { FaArrowRight } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router";
 import { useContext, useState } from "react";
 import { validators } from "../../../utils";
-import axiosClient from "../../../AxiosClient";
 import { AuthContext } from "../../../Context/AuthContext";
 export function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
-  const registerAccount = async (e) => {
+  const loginAccount = async (e) => {
     e.preventDefault(); // QUAN TRỌNG: Chặn load lại trang
 
     if (!validators.username(username)) {
@@ -28,17 +27,13 @@ export function Login() {
       username: username,
       password: password
     }
-    let response;
     try {
-      response = await axiosClient.post('/auth/login', account);
-
-      navigate("/")
-      login();
-      alert(response.data.message);
-
+      const data = await login(account);
+      navigate("/user")
+      alert(data.message);
     }
     catch (err) {
-      alert(err?.response?.data.message);
+      alert(err?.response?.data?.message || "Sai tài khoản hoặc mật khẩu");
     }
 
   }
@@ -58,7 +53,7 @@ export function Login() {
             <p className="text-blue-500 shadow-blue-700 text-md">Chào mừng, chỉ huy!</p>
           </div>
           <form
-            onSubmit={registerAccount}
+            onSubmit={loginAccount}
             className="w-full flex flex-col gap-3">
             <div>
               <p className="font-bold mb-2 text-blue-100">Username</p>
@@ -125,7 +120,7 @@ export function Login() {
 
 
           <p className="text-gray-500 text-sm">Chưa có tài khoản?
-            <Link to="/api/auth/register" className="text-blue-500 cursor-pointer transition-all duration-300 hover:underline"> Đăng kí tài khoản ngay</Link>
+            <Link to="/register" className="text-blue-500 cursor-pointer transition-all duration-300 hover:underline"> Đăng kí tài khoản ngay</Link>
           </p>
         </div>
       </div>

@@ -1,6 +1,11 @@
-export function UserLevelBar({ level = 25, currentXp = 4500, maxXp = 10000 }) {
-  // Tính toán tỷ lệ phần trăm thanh kinh nghiệm
-  const progressPercent = (currentXp / maxXp) * 100;
+export function UserLevelBar({user}) {
+  // 1. Khai báo các giá trị cần thiết
+  const currentXp = user?.xp || 0;
+  const maxXp = user?.nextLevelXp; // Hoặc lấy từ user?.nextLevelXp nếu backend có trả về
+  const level = user?.level || 1;
+
+  // 2. Tính toán tỷ lệ phần trăm thanh kinh nghiệm
+  const progressPercent = Math.min((currentXp / maxXp) * 100, 100); 
 
   return (
     <div className="bg-[#0a192f]/80 border border-white/5 p-5 rounded-xl w-full">
@@ -29,7 +34,6 @@ export function UserLevelBar({ level = 25, currentXp = 4500, maxXp = 10000 }) {
 
       {/* Progress Bar Container */}
       <div className="h-2.5 w-full bg-slate-800/50 rounded-full overflow-hidden relative">
-        {/* The Actual Progress Line */}
         <div 
           className="h-full bg-green-500 rounded-full transition-all duration-1000 ease-out shadow-[0_0_12px_rgba(34,197,94,0.6)]"
           style={{ width: `${progressPercent}%` }}

@@ -1,5 +1,5 @@
 import { FaLevelUpAlt } from "react-icons/fa";
-export function UserHero() {
+export function UserHero({user}) {
   return (
     <div className="bg-[#0a192f]/80 backdrop-blur-md border border-white/10 p-4 rounded-xl shadow-2xl flex flex-col gap-3 ">
       <div className="flex items-center gap-4">
@@ -7,11 +7,11 @@ export function UserHero() {
           HarutoPicture
         </div>
         <div className="flex flex-col gap-2">
-          <p className="font-bold text-3xl">Haruto</p>
-          <p className="text-green-500 drop-shadow-[0_0_8px_rgba(34,197,94,0.8)] font-bold">@Baovadat6789</p>
+          <p className="font-bold text-3xl">{user?.displayName}</p>
+          <p className="text-green-500 drop-shadow-[0_0_8px_rgba(34,197,94,0.8)] font-bold">@{user?.username}</p>
           <div className="flex gap-2">
             <FaLevelUpAlt className="text-green-500 drop-shadow-[0_0_8px_rgba(34,197,94,0.8)]" />
-            <p className="text-gray-400 text-sm font-medium">Level 25 Veteran</p>
+            <p className="text-gray-400 text-sm font-medium">Level {user?.level}</p>
           </div>
 
         </div>

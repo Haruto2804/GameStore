@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FaUser, FaUserFriends } from "react-icons/fa";
 import { RiMessage2Fill } from "react-icons/ri";
 import { IoMdSettings } from "react-icons/io";
 import { IoLogOut } from "react-icons/io5";
-
+import { Navigate, useNavigate } from "react-router";
+import { AuthContext } from "../../../Context/AuthContext";
 const navItems = [
   { title: "profile", path: "/profile", icon: FaUser },
   { title: "friends", path: "/friends", icon: FaUserFriends },
@@ -15,6 +16,15 @@ const navItems = [
 export function AccountNav() {
   // 1. Quản lý item đang được chọn
   const [isSelect, setIsSelect] = useState("profile");
+  const navigate = useNavigate();
+  const { logout } = useContext(AuthContext)
+  const handleLogout = async () => {
+    try {
+      logout();
+    } catch (err) {
+      console.error("Lỗi đăng xuất", err);
+    }
+  };
 
   return (
     <div className="bg-[#0a192f]/80 backdrop-blur-md border border-white/10 p-2 rounded-xl shadow-2xl flex flex-col gap-1">

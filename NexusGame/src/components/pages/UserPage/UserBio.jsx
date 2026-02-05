@@ -1,6 +1,6 @@
 import { IoMdInformationCircleOutline } from "react-icons/io";
 
-export function UserBio({ bio = "Chuyên trị các dòng game Souls-like" }) {
+export function UserBio({ bio = "Người này quá lười để cập nhật bio..." }) {
   return (
     <div className="bg-[#0a192f]/40 backdrop-blur-md border border-white/5 p-6 rounded-xl h-full flex flex-col gap-4 shadow-xl">
       {/* Header của phần Bio */}

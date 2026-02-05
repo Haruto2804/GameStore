@@ -24,6 +24,21 @@ const AccountSchema = new mongoose.Schema({
     type: String,
     required: true,
     maxlength: [50, 'Tên hiển thị quá dài, vui lòng đặt sao cho ngắn lại!']
+  },
+  role: {
+    type: String,
+    required: true,
+    maxlength: [10],
+    default: 'User'
+  },
+  bio: {
+    type: String,
+    maxlength: [200, 'Giới thiệu bản thân không được quá 200 ký tự'],
+    default: 'Người này quá lười để nhập bio.... '
+  },
+  xp: {
+    type: Number,
+    default: 0
   }
 },
   {
@@ -32,4 +47,31 @@ const AccountSchema = new mongoose.Schema({
   }
 
 )
+AccountSchema.set('toJSON', { virtuals: true });
+AccountSchema.set('toObject', { virtuals: true });
+
+// 1. Tính Level hiện tại
+AccountSchema.virtual('level').get(function () {
+  // Level = căn bậc hai của (XP / 100) + 1
+  return Math.floor(Math.sqrt(this.xp / 100)) + 1;
+});
+
+AccountSchema.virtual('levelProgress').get(function () {
+  const currentLevel = Math.floor(Math.sqrt(this.xp / 100)) + 1;
+  const xpStartOfLevel = 100 * Math.pow(currentLevel - 1, 2);
+  const xpNextLevel = 100 * Math.pow(currentLevel, 2);
+
+  const progress = ((this.xp - xpStartOfLevel) / (xpNextLevel - xpStartOfLevel)) * 100;
+  return Math.round(progress); // Trả về số nguyên như 45, 60...
+});
+
+AccountSchema.virtual('nextLevelXp').get(function () {
+  const currentLevel = Math.floor(Math.sqrt(this.xp / 100)) + 1;
+  return 100 * Math.pow(currentLevel, 2);
+});
+
+AccountSchema.virtual('joined').get(function () {
+  if (!this.createdAt) return "Chưa cập nhật";
+  return this.createdAt.toLocaleDateString('vi-VN');
+})
 module.exports = mongoose.model("Account", AccountSchema, "accounts");

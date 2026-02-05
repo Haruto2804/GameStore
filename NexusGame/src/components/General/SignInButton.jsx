@@ -3,7 +3,7 @@ import { useContext, useEffect } from "react";
 import { AuthContext } from "../../Context/AuthContext.js";
 
 export function SignInButton() {
-  const { login, logout, isLogged, setIsLogged } = useContext(AuthContext)
+  const { logout, isLogged, setIsLogged } = useContext(AuthContext)
   const navigate = useNavigate();
 
   // Kiểm tra trạng thái đăng nhập khi component load lần đầu
@@ -13,13 +13,22 @@ export function SignInButton() {
     setIsLogged(status);
   }, []); //
 
-  const handleAuth = () => {
-    if (isLogged) {
-      console.log('dang xuat')
-      logout();
-      navigate('/login')
-    } 
-  }
+  const handleAuth = async () => {
+    if (!isLogged) {
+
+      navigate('/login');
+    } else {
+      try {
+        // Chờ logout xong (vì bạn có gọi API xóa HttpOnly Cookie)
+        await logout();
+        
+        // Về trang chủ sau khi đăng xuất
+        navigate('/');
+      } catch (error) {
+        console.error("Lỗi khi đăng xuất:", error);
+      }
+    }
+  };
   return (
     <button
       onClick={() => handleAuth()}

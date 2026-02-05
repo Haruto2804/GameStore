@@ -236,12 +236,9 @@ app.get('/api/auth/me', async (req, res) => {
   try {
     const verified = jwt.verify(token, process.env.JWT_SECRET);
     const foundUser = await AccountModel.findOne({ _id: verified.id });
-    res.status(200).json({
-      id: foundUser.id,
-      username: foundUser.username,
-      email: foundUser.email,
-      displayName: foundUser.displayName
-    })
+    const userData = foundUser.toObject()
+    delete userData.password;
+    res.status(200).json(userData);
   }
   catch (err) {
     res.status(400).json({ message: "Token không hợp lệ" });

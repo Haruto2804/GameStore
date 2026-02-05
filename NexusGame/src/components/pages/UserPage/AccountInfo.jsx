@@ -1,8 +1,11 @@
-export function AccountInfo() {
+import { formatDateString } from "../../../utils";
+
+export function AccountInfo({ user }) {
+  console.log("Dữ liệu user trong AccountInfo:", user); // Kiểm tra ở đây
   const infoItems = [
-    { label: "Email", value: "baokhongwibu2005@gmail.com" },
-    { label: "Role", value: "Admin" },
-    { label: "Joined", value: "20/12/2025" }, // Ví dụ: "Jan 2024"
+    { label: "Email", value: user?.email },
+    { label: "Role", value: user?.role },
+    { label: "Joined", value: formatDateString(user?.joined) }, // Ví dụ: "Jan 2024"
   ];
 
   return (

@@ -16,32 +16,9 @@ import { CommunityContext } from './Context/CommunityContext'
 import { CommunityProvider } from './Context/CommunityData'
 import { Register } from './components/pages/AuthPage/Register'
 import { Login } from './components/pages/AuthPage/Login'
-import { useState, useEffect } from 'react'
-import axiosClient from './AxiosClient'
 import { AuthProvider } from './Context/AuthHandle'
 import { User } from './components/pages/UserPage/User'
 function App() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const checkedLoggedIn = async () => {
-      try {
-        const response = await axiosClient.get('/auth/me');
-        setUser(response.data);
-      }
-      catch (err) {
-        console.log('Phiên đăng nhập hết hạn, vui lòng đăng nhập lại: ', err);
-        setUser(null);
-        localStorage.removeItem('is_logged');
-      }
-      finally {
-        setLoading(false);
-      }
-    }
-    checkedLoggedIn();
-  }, [])
-  console.log(user);
-  if (loading) return <div>Đang kiểm tra đăng nhập...</div>;
   return (
     <div className="bg-bg-base h-screen w-screen font-Rajdhani ">
       <div className="h-screen w-screen bg-bg-base flex flex-col max-w-8xl mx-auto">
@@ -60,7 +37,7 @@ function App() {
                     <GameDetails />
                   }></Route>
                   <Route path="/community" element={<Community />} />
-                  <Route path="/community/posts/:id" element={<DetailsPost user={user} />} />
+                  <Route path="/community/posts/:id" element={<DetailsPost />} />
                   <Route path="/genres"></Route>
                   <Route path="/platform"></Route>
                   <Route path="/discount" ></Route>
@@ -76,6 +53,7 @@ function App() {
             </CartProvider>
           </CommunityProvider>
         </AuthProvider>
+
 
 
 

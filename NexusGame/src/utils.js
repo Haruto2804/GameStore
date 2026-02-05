@@ -8,3 +8,15 @@ export const validators = {
   
   displayName: (val) => val && val.length >= 6 && val.length <= 50,
 }
+
+export const formatDateString = (isoString) => {
+  if (!isoString) return "Chưa cập nhật";
+  
+  const date = new Date(isoString);
+  
+  return date.toLocaleDateString("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};

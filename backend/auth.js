@@ -62,14 +62,34 @@ router.post('/login', validationLogin, async (req, res) => {
       sameSite: 'Lax',
       maxAge: 24 * 60 * 60 * 1000
     })
+    const userData = user.toObject();
+    delete userData.password;
     res.status(200).json({
       message: "Đăng nhập thành công",
-      user: { id: user._id, username: user.username }
+      user: userData
     });
   }
   catch (err) {
     res.status(500).json({
       message: "Đăng nhập thất bại",
+    });
+  }
+})
+
+router.post('/logout', (req, res) => {
+  try {
+    res.cookie('accessToken', '', {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'Lax',
+      expires: new Date(0)
+    });
+    res.status(200).json({
+      message: "Đăng xuất thành công"
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Đăng xuất thất bại",
     });
   }
 })

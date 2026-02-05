@@ -6,7 +6,6 @@ import { useState } from "react";
 import { Link, Navigate } from "react-router";
 import { validators } from "../../../utils";
 import axiosClient from "../../../AxiosClient";
-import { useNavigate } from "react-router";
 export function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
