@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-
 const AccountModel = require('./models/Account.model.js');
 const { validationRegister, validationLogin } = require('./authValidation.js')
 const saltRounds = 10; // Độ phức tạp của mã hóa (10 là tiêu chuẩn)
@@ -63,6 +62,7 @@ router.post('/login', validationLogin, async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000
     })
     const userData = user.toObject();
+
     delete userData.password;
     res.status(200).json({
       message: "Đăng nhập thành công",

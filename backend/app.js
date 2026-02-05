@@ -9,6 +9,7 @@ const CommunityPost = require('./models/communityPost.model.js');
 const AccountModel = require('./models/Account.model.js');
 const Review = require('./models/review.model.js')
 const authRoute = require('./auth.js')
+const levelRoute = require('./routes/xp.routes.js')
 const { protect } = require('./authMiddleware.js');
 const app = express();
 app.use(cors({
@@ -244,3 +245,5 @@ app.get('/api/auth/me', async (req, res) => {
     res.status(400).json({ message: "Token không hợp lệ" });
   }
 })
+
+app.use('/api', levelRoute);

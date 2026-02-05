@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // 1. Import useNavigate
 import { AuthContext } from "./AuthContext.js";
 import axiosClient from '../AxiosClient.js';
-
+import {gainXpAction} from '../api/gainXp.js'
 export function AuthProvider({ children }) {
   const [isLogged, setIsLogged] = useState(false);
   const navigate = useNavigate(); // 2. Khai báo hook điều hướng
@@ -32,8 +32,9 @@ export function AuthProvider({ children }) {
     try {
       const response = await axiosClient.post('/auth/login', account);
       console.log(response)
-      const userData = response.data.user || response.data;
-      setUser(userData);
+      const updatedUser = await gainXpAction('DAILY_LOGIN');
+      const finalUser = updatedUser?.user || updatedUser || response.data.user;
+      setUser(finalUser);
       setIsLogged(true);
       return response.data;
     }
