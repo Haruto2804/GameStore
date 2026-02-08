@@ -18,6 +18,7 @@ import { Register } from './components/pages/AuthPage/Register'
 import { Login } from './components/pages/AuthPage/Login'
 import { AuthProvider } from './Context/AuthHandle'
 import { User } from './components/pages/UserPage/User'
+import { EditProfile } from './components/pages/UserPage/EditProfilePage/EditProfile'
 function App() {
   return (
     <div className="bg-bg-base h-screen w-screen font-Rajdhani ">
@@ -46,6 +47,7 @@ function App() {
                   <Route path="/register" element={<Register />}></Route>
                   <Route path="/login" element={<Login />}></Route>
                   <Route path="/user" element={<User />}></Route>
+                  <Route path="/user/editProfile" element={<EditProfile />}></Route>
                   <Route path="*" element={<NotFound />}></Route>
                   x
                 </Routes>

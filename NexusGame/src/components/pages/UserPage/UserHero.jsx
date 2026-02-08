@@ -1,5 +1,6 @@
 import { FaLevelUpAlt } from "react-icons/fa";
-export function UserHero({user}) {
+import { Link } from "react-router";
+export function UserHero({ user }) {
   return (
     <div className="bg-[#0a192f]/80 backdrop-blur-md border border-white/10 p-4 rounded-xl shadow-2xl flex flex-col gap-3 ">
       <div className="flex items-center gap-4">
@@ -17,12 +18,16 @@ export function UserHero({user}) {
         </div>
 
       </div>
-      <button className="w-full py-2.5 rounded-lg font-bold text-white
+      <Link to="/user/editProfile" >
+        <button
+          className="w-full py-2.5 rounded-lg font-bold text-white
     bg-green-600/10 border border-green-500/30 
     hover:bg-green-500 hover:text-black hover:shadow-[0_0_20px_rgba(34,197,94,0.4)]
       transition-all duration-300 active:scale-[0.98] cursor-pointer">
-        Edit Profile
-      </button>
+          Edit Profile
+        </button>
+      </Link>
+
     </div>
   )
 }

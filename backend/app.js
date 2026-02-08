@@ -9,7 +9,8 @@ const CommunityPost = require('./models/communityPost.model.js');
 const AccountModel = require('./models/Account.model.js');
 const Review = require('./models/review.model.js')
 const authRoute = require('./auth.js')
-const levelRoute = require('./routes/xp.routes.js')
+const levelRoute = require('./routes/xp.routes.js');
+const uploadCloudRoute = require('./routes/update.image.js');
 const { protect } = require('./authMiddleware.js');
 const app = express();
 app.use(cors({
@@ -247,3 +248,4 @@ app.get('/api/auth/me', async (req, res) => {
 })
 
 app.use('/api', levelRoute);
+app.use('/api',uploadCloudRoute);

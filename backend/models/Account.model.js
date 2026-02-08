@@ -6,6 +6,10 @@ const AccountSchema = new mongoose.Schema({
     minlength: [3, 'Tên đăng nhập phải ít nhất 3 ký tự'],
     maxlength: [30, 'Tên đăng nhập không được quá 30 ký tự']
   },
+  avatarId: {
+    type: String,
+    default: 'unknown_rnyxbt'
+  },
   password: {
     type: String,
     required: true,
@@ -33,7 +37,7 @@ const AccountSchema = new mongoose.Schema({
   },
   bio: {
     type: String,
-    maxlength: [200, 'Giới thiệu bản thân không được quá 200 ký tự'],
+    maxlength: [500, 'Giới thiệu bản thân không được quá 500 ký tự'],
     default: 'Người này quá lười để nhập bio.... '
   },
   xp: {

@@ -3,7 +3,8 @@ import { MdOutlinePayment } from "react-icons/md";
 import { CartContext } from "../../../Context/CartContext";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { Link } from "react-router";
-
+import { AuthContext } from "../../../Context/AuthContext";
+import { gainXpAction } from "../../../api/gainXp";
 const GAME_PROMO_CODES = [
   {
     code: "HarutoWinter",
@@ -27,6 +28,7 @@ export function Checkout() {
   const [promoCode, setPromoCode] = useState("");
   const [sale, setSale] = useState(null);
   const [promoError, setPromoError] = useState("");
+  const { setUser } = useContext(AuthContext);
   // Logic kiểm tra mã giảm giá
   const checkSales = () => {
     const inputValue = promoCode.toUpperCase().trim();
@@ -62,7 +64,17 @@ export function Checkout() {
 
   // 3. Tổng cộng cuối cùng
   const grandTotal = (totalPrice - promoDiscountAmount) + taxAmount;
-
+  const handleBuyGame = async () => {
+    try {
+      const updatedUser = await gainXpAction('BUY GAME');
+      const finalUser = updatedUser?.user || updatedUser || updatedUser.data.user;
+      console.log('Cộng thành công: ', updatedUser);
+      setUser(finalUser);
+    }
+    catch (err) {
+      console.log('Lỗi không thể cộng điểm khi mua game!', err);
+    }
+  }
   return (
     <div className="bg-bg-base">
       <div className="bg-bg-base min-h-screen text-white">
@@ -200,7 +212,9 @@ export function Checkout() {
                 }}
                 className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl transition-all flex gap-3 items-center justify-center shadow-lg shadow-green-500/20 active:scale-95">
                 <MdOutlinePayment className="text-2xl" />
-                <span className="text-lg uppercase tracking-wider cursor-pointer">Checkout Now</span>
+                <span
+                  onClick={()=> handleBuyGame()}
+                  className="text-lg uppercase tracking-wider cursor-pointer">Checkout Now</span>
               </button>
 
               <div className="relative mb-6 mt-8">

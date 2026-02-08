@@ -31,7 +31,6 @@ export function AuthProvider({ children }) {
   const login = async (account) => {
     try {
       const response = await axiosClient.post('/auth/login', account);
-      console.log(response)
       const updatedUser = await gainXpAction('DAILY_LOGIN');
       const finalUser = updatedUser?.user || updatedUser || response.data.user;
       setUser(finalUser);
@@ -55,7 +54,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const value = { isLogged, setIsLogged, login, logout, user, isLoading };
+  const value = { isLogged, setIsLogged, login, logout, user,setUser, isLoading };
 
   return (
     <AuthContext.Provider value={value}>
