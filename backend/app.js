@@ -10,6 +10,7 @@ const AccountModel = require('./models/Account.model.js');
 const Review = require('./models/review.model.js')
 const authRoute = require('./auth.js')
 const levelRoute = require('./routes/xp.routes.js');
+const editProfileRoute = require('./routes/edit.profile.js')
 const uploadCloudRoute = require('./routes/update.image.js');
 const { protect } = require('./authMiddleware.js');
 const app = express();
@@ -249,3 +250,4 @@ app.get('/api/auth/me', async (req, res) => {
 
 app.use('/api', levelRoute);
 app.use('/api',uploadCloudRoute);
+app.use('/api',editProfileRoute);

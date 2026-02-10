@@ -2,19 +2,50 @@ import { useState } from "react";
 import { FaUserPen, FaCircleInfo } from "react-icons/fa6";
 import { MdOutlineMail } from "react-icons/md";
 import { AuthContext } from "../../../../Context/AuthContext";
-
-export function EditProfileForm({user}) {
+import { validators } from "../../../../utils";
+import axiosClient from '../../../../AxiosClient.js'
+export function EditProfileForm({ user }) {
 
   const [displayName, setDisplayName] = useState(user?.displayName || "");
   const [email, setEmail] = useState(user?.email || "");
   const [bio, setBio] = useState(user?.bio || "");
   const maxLength = 500;
 
+  const handleChangeProfile = async (e) => {
+    e.preventDefault()
+    if (!validators.displayName(displayName)) {
+      alert('Tên hiển thị không hợp lệ!');
+      return;
+    }
+    if (!validators.email(email)) {
+      alert('Tên hiển thị không hợp lệ!');
+      return;
+    }
+    if (bio.length > 500) {
+      alert('Tiểu sử không được dài quá 500 kí tự!');
+    }
+    const updatedProfile = {
+      displayName: displayName.trim(),
+      email: email,
+      bio: bio
+    }
+    try {
+      const response = await axiosClient.post('/edit-profile', updatedProfile);
+      alert(response.data.message || "Cập nhật thành công!");
+    }
+    catch (err) {
+      
+      const serverMessage = err.response?.data?.message || "Cập nhật thất bại!";
+      alert(serverMessage);
+      console.log("Error details:", err.response?.data);
+    }
+  }
   return (
     <div className="lg:col-span-8 space-y-6">
       <div className="bg-white/5 border border-white/10 rounded-xl p-8">
-        <div className="grid grid-cols-1 gap-8">
-          
+        <form
+          onSubmit={handleChangeProfile}
+          id="edit-profile-form" className="grid grid-cols-1 gap-8">
           {/* Tên hiển thị */}
           <div className="space-y-2">
             <label className="block text-sm font-bold text-slate-400 uppercase tracking-widest">Tên hiển thị</label>
@@ -35,10 +66,10 @@ export function EditProfileForm({user}) {
             <label className="block text-sm font-bold text-slate-400 uppercase tracking-widest">System Email</label>
             <div className="relative">
               <MdOutlineMail className="absolute top-4.5 left-4.5 size-5 text-green-500" />
-              <input 
+              <input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-background-dark border border-white/10 rounded-lg py-4 pl-12 pr-4 focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition-all text-white font-medium" 
+                className="w-full bg-background-dark border border-white/10 rounded-lg py-4 pl-12 pr-4 focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition-all text-white font-medium"
                 type="email"
                 placeholder="Email của bạn?"
               />
@@ -56,8 +87,8 @@ export function EditProfileForm({user}) {
               maxLength={maxLength}
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              className="w-full bg-background-dark border border-white/10 rounded-lg p-4 focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition-all text-white font-medium resize-none custom-scrollbar" 
-              placeholder="Nói với cộng đồng về bản thân bạn..." 
+              className="w-full bg-background-dark border border-white/10 rounded-lg p-4 focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition-all text-white font-medium resize-none custom-scrollbar"
+              placeholder="Nói với cộng đồng về bản thân bạn..."
               rows="5"
             />
           </div>
@@ -67,7 +98,7 @@ export function EditProfileForm({user}) {
             <div className="flex items-start gap-4 p-4 rounded-lg bg-white/5 border border-white/10 opacity-70">
               <FaCircleInfo className="size-6 text-green-500" />
               <div>
-                <p className="text-sm font-bold text-slate-300">Account Role: <span className="text-green-500">Admin</span></p>
+                <p className="text-sm font-bold text-slate-300">Account Role: <span className="text-green-500">{user?.role}</span></p>
                 <p className="text-xs text-slate-500 mt-1">
                   Việc phân công vai trò được quản lý bởi hệ thống. Nếu bạn cho rằng đây là lỗi, vui lòng liên hệ Admin.
                 </p>
@@ -75,7 +106,7 @@ export function EditProfileForm({user}) {
             </div>
           </div>
 
-        </div>
+        </form>
       </div>
     </div>
   );

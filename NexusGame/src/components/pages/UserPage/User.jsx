@@ -24,7 +24,7 @@ export function User() {
         </div>
         <div className="basis-2/3 p-4 flex flex-col gap-3">
           <UserHero user={user} />
-          <UserLevelBar user = {user} />
+          <UserLevelBar user={user} />
           <UserBio bio={user?.bio} />
         </div>
       </div>

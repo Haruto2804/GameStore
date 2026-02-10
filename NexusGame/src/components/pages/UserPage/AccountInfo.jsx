@@ -1,7 +1,6 @@
 import { formatDateString } from "../../../utils";
 
 export function AccountInfo({ user }) {
-  console.log("Dữ liệu user trong AccountInfo:", user); // Kiểm tra ở đây
   const infoItems = [
     { label: "Email", value: user?.email },
     { label: "Role", value: user?.role },

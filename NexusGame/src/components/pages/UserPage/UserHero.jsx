@@ -1,12 +1,14 @@
 import { FaLevelUpAlt } from "react-icons/fa";
 import { Link } from "react-router";
 export function UserHero({ user }) {
+  // Kiểm tra xem user.avatar có thực sự thay đổi link chưa
   return (
     <div className="bg-[#0a192f]/80 backdrop-blur-md border border-white/10 p-4 rounded-xl shadow-2xl flex flex-col gap-3 ">
       <div className="flex items-center gap-4">
-        <div className="size-25 bg-slate-500 border-2 border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.6)] rounded-lg">
-          HarutoPicture
-        </div>
+        <img
+          src={user?.avatar}
+          className="size-25 bg-slate-500 border-2 border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.6)] rounded-lg">
+        </img>
         <div className="flex flex-col gap-2">
           <p className="font-bold text-3xl">{user?.displayName}</p>
           <p className="text-green-500 drop-shadow-[0_0_8px_rgba(34,197,94,0.8)] font-bold">@{user?.username}</p>
@@ -14,7 +16,6 @@ export function UserHero({ user }) {
             <FaLevelUpAlt className="text-green-500 drop-shadow-[0_0_8px_rgba(34,197,94,0.8)]" />
             <p className="text-gray-400 text-sm font-medium">Level {user?.level}</p>
           </div>
-
         </div>
 
       </div>

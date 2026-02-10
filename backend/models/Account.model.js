@@ -6,9 +6,9 @@ const AccountSchema = new mongoose.Schema({
     minlength: [3, 'Tên đăng nhập phải ít nhất 3 ký tự'],
     maxlength: [30, 'Tên đăng nhập không được quá 30 ký tự']
   },
-  avatarId: {
+  avatar: {
     type: String,
-    default: 'unknown_rnyxbt'
+    default: 'https://res.cloudinary.com/ddvotq2cg/image/upload/v1770347712/unknown_rnyxbt.jpg'
   },
   password: {
     type: String,
