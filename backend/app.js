@@ -154,7 +154,8 @@ app.get('/api/community/posts', async (req, res) => {
     const posts = await CommunityPost.find(filtered)
       .sort({ posted_at: -1 })
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .populate('author', 'displayName xp avatar');
     const totalPosts = await CommunityPost.countDocuments(filtered);
     res.json({
       posts,
@@ -209,7 +210,8 @@ app.patch('/api/community/posts/:id/views', protect, async (req, res) => {
 app.get('/api/community/posts/:id', async (req, res) => {
   try {
     const postId = req.params.id;
-    const post = await CommunityPost.findById(postId);
+    const post = await CommunityPost.findById(postId)
+    .populate('author', 'avatar xp displayName')
     res.json(post);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -249,5 +251,5 @@ app.get('/api/auth/me', async (req, res) => {
 })
 
 app.use('/api', levelRoute);
-app.use('/api',uploadCloudRoute);
-app.use('/api',editProfileRoute);
+app.use('/api', uploadCloudRoute);
+app.use('/api', editProfileRoute);

@@ -6,8 +6,8 @@ const CommunityPostSchema = new mongoose.Schema(
       required: true
     },
     author: {
-      type: String,
-      ref: 'accounts',
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Accounts',
       required: true
     },
     content: {

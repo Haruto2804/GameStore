@@ -5,12 +5,13 @@ import { ForumLeaderBoard } from "./Forum/ForumLeaderBoard";
 import { useContext, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { CommunityContext } from "../../../Context/CommunityContext";
-import axios from "axios";
 import axiosClient from "../../../AxiosClient";
+import { AuthContext } from "../../../Context/AuthContext";
 
 export function Community() {
   // 1. States cho dữ liệu bài viết
   const [postCategory, setPostCategory] = useState("");
+  const {user} = useContext(AuthContext)
   // 2. States cho Modal và Form
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [tagInput, setTagInput] = useState(""); // Lưu chữ đang gõ ở ô tag
@@ -19,7 +20,7 @@ export function Community() {
     title: "",
     content: "",
   });
-  const { category, communityPosts, setCategory,setCommunityPosts } = useContext(CommunityContext);
+  const { category, communityPosts, setCategory, setCommunityPosts } = useContext(CommunityContext);
   // 3. Logic xử lý Tag (Biến chữ thành #TAG)
   const handleTagKeyDown = (e) => {
 
@@ -47,6 +48,7 @@ export function Community() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const finalData = {
+      author: user.id,
       title: formData.title,
       content: {
         text: formData.content

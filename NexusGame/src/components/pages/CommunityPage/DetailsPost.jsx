@@ -3,20 +3,21 @@ import { FaBookBookmark } from "react-icons/fa6";
 import { MdOutlineShare } from "react-icons/md";
 import { AiOutlineLike } from "react-icons/ai";
 import { AiOutlineDislike } from "react-icons/ai";
-import HarutoPicture from '../../../../public/haruto.png'
 import { FaEye } from "react-icons/fa";
 import { CommentSection } from "./CommentSection";
 import { CommentList } from "./CommentList";
 import { useState, useEffect } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useParams } from "react-router";
 import { useCallback } from "react";
 import axiosClient from "../../../AxiosClient";
-export function DetailsPost({user}) {
-  console.log(user)
+import { Navigate } from "react-router";
+export function DetailsPost() {
   const [comment, setComment] = useState("");
   const [post, setPost] = useState({});
   const { id } = useParams();
+  const user = post?.author;
+  const navigate = useNavigate();
   const handleLikePost = async () => {
     try {
       const resLike = await axiosClient.patch(`/community/posts/${id}/likes`);
@@ -79,15 +80,17 @@ export function DetailsPost({user}) {
 
         {/* User Section */}
         <div className="user-section flex flex-col md:flex-row justify-between mt-5 gap-5 md:items-center">
-          <div className="flex gap-5 cursor-pointer group items-center">
-            <img src={HarutoPicture} className="group-hover:ring-3 group-hover:ring-blue-500 rounded-full size-12 object-cover transition-all" alt="avatar" />
+          <div 
+          onClick={()=> navigate('/user/ProfileUser')}
+          className="flex gap-5 cursor-pointer group items-center">
+            <img src={user?.avatar} className="group-hover:ring-3 group-hover:ring-blue-500 rounded-full size-12 object-cover transition-all" alt="avatar" />
             <div className="flex flex-col">
               <p className="font-bold group-hover:text-blue-500">{user?.displayName}</p>
               <div className="flex gap-2 text-blue-500/70">
                 {/* Optional Chaining cho ngày tháng */}
                 <p>{post?.formatted_date}</p>
                 <p> | </p>
-                <p>Level 58</p>
+                <p>Level {user?.level}</p>
               </div>
             </div>
           </div>

@@ -78,4 +78,4 @@ AccountSchema.virtual('joined').get(function () {
   if (!this.createdAt) return "Chưa cập nhật";
   return this.createdAt.toLocaleDateString('vi-VN');
 })
-module.exports = mongoose.model("Account", AccountSchema, "accounts");
+module.exports = mongoose.model("Accounts", AccountSchema, "accounts");

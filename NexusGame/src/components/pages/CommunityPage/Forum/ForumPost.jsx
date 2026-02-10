@@ -2,13 +2,14 @@ import { FaEye } from "react-icons/fa"
 import { FaRegCommentAlt } from "react-icons/fa";
 import { Link } from "react-router";
 export function ForumPost({ postItem }) {
+  console.log(postItem)
   const displayDate = postItem.formatted_date || "Vừa xong";
   return (
     <div className="bg-slate-900 rounded-md border border-green-700/51 p-4 flex flex-col gap-2">
       <div className="text-sm">
         <p className="text-gray-500">
           Đăng bởi |
-          <span className="text-white"> Haruto </span>
+          <span className="text-white"> {postItem?.author?.displayName} </span>
           <span> | {displayDate}</span>
         </p>
 
@@ -23,9 +24,9 @@ export function ForumPost({ postItem }) {
         <div className="flex gap-4">
           {postItem?.tags.map((item) => {
             return (
-              <div 
-              key = {item}
-              className="bg-slate-800 rounded-lg py-1 px-3 
+              <div
+                key={item}
+                className="bg-slate-800 rounded-lg py-1 px-3 
               text-gray-500 text-sm cursor-pointer hover:bg-slate-700 
               transition-all duration-200">{item}</div>
             )
