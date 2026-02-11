@@ -4,8 +4,9 @@ import { MdOutlineMail } from "react-icons/md";
 import { AuthContext } from "../../../../Context/AuthContext";
 import { validators } from "../../../../utils";
 import axiosClient from '../../../../AxiosClient.js'
+import { useContext } from "react";
 export function EditProfileForm({ user }) {
-
+  const { setUser} = useContext(AuthContext);
   const [displayName, setDisplayName] = useState(user?.displayName || "");
   const [email, setEmail] = useState(user?.email || "");
   const [bio, setBio] = useState(user?.bio || "");
@@ -29,8 +30,13 @@ export function EditProfileForm({ user }) {
       email: email,
       bio: bio
     }
+
     try {
       const response = await axiosClient.post('/edit-profile', updatedProfile);
+      setUser({
+        ...user,
+        ...updatedProfile
+      })
       alert(response.data.message || "Cập nhật thành công!");
     }
     catch (err) {

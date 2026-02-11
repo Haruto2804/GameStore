@@ -12,11 +12,15 @@ import { useParams } from "react-router";
 import { useCallback } from "react";
 import axiosClient from "../../../AxiosClient";
 import { Navigate } from "react-router";
+import { useContext } from "react";
+import { AuthContext } from "../../../Context/AuthContext";
 export function DetailsPost() {
   const [comment, setComment] = useState("");
   const [post, setPost] = useState({});
   const { id } = useParams();
   const user = post?.author;
+  const { user: CurrentUser } = useContext(AuthContext);
+
   const navigate = useNavigate();
   const handleLikePost = async () => {
     try {
@@ -59,7 +63,7 @@ export function DetailsPost() {
       incrementView();
     }, 60000)
     return () => clearTimeout(timer);
-  }, [id, incrementView]);
+  }, [CurrentUser, id, incrementView, navigate, user]);
   return (
     <div className="bg-bg-base mt-22">
       <div className="text-white max-w-5xl mx-auto p-4">
@@ -80,9 +84,17 @@ export function DetailsPost() {
 
         {/* User Section */}
         <div className="user-section flex flex-col md:flex-row justify-between mt-5 gap-5 md:items-center">
-          <div 
-          onClick={()=> navigate('/user/ProfileUser')}
-          className="flex gap-5 cursor-pointer group items-center">
+          <div
+            onClick={() => {
+              if (CurrentUser?.id === user?.id) {
+                navigate('/user', {replace: true});
+              }
+              else {
+                navigate(`/user/${user.id}`)
+              }
+
+            }}
+            className="flex gap-5 cursor-pointer group items-center">
             <img src={user?.avatar} className="group-hover:ring-3 group-hover:ring-blue-500 rounded-full size-12 object-cover transition-all" alt="avatar" />
             <div className="flex flex-col">
               <p className="font-bold group-hover:text-blue-500">{user?.displayName}</p>

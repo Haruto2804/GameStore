@@ -27,7 +27,7 @@ export function UserLevelBar({user}) {
           <p className="text-gray-300 font-bold text-sm">
             <span className="text-white">{currentXp.toLocaleString()}</span>
             <span className="text-gray-500 mx-1">/</span>
-            {maxXp.toLocaleString()} XP
+            {maxXp?.toLocaleString('vi-VN')} XP
           </p>
         </div>
       </div>

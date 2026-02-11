@@ -211,7 +211,7 @@ app.get('/api/community/posts/:id', async (req, res) => {
   try {
     const postId = req.params.id;
     const post = await CommunityPost.findById(postId)
-    .populate('author', 'avatar xp displayName')
+      .populate('author', 'avatar xp displayName')
     res.json(post);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -250,6 +250,24 @@ app.get('/api/auth/me', async (req, res) => {
   }
 })
 
+app.get('/api/user/:userId', protect, async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const foundUser = await AccountModel.findById(userId).select('-password');
+    if (!foundUser) {
+      return res.status(404).json({ message: "Not found User!" });
+    }
+    res.status(200).json({
+      message: "Found User!",
+      user: foundUser
+    })
+  }
+  catch (err) {
+    res.status(500).json({
+      message: "Lỗi khi fecth user!"
+    })
+  }
+})
 app.use('/api', levelRoute);
 app.use('/api', uploadCloudRoute);
 app.use('/api', editProfileRoute);
