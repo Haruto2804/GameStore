@@ -12,6 +12,7 @@ const authRoute = require('./auth.js')
 const levelRoute = require('./routes/xp.routes.js');
 const editProfileRoute = require('./routes/edit.profile.js')
 const uploadCloudRoute = require('./routes/update.image.js');
+const communityPostRoute = require('./routes/communityPost.route.js');
 const { protect } = require('./authMiddleware.js');
 const app = express();
 app.use(cors({
@@ -142,94 +143,6 @@ app.get('/api/games/reviews/:gameId', async (req, res) => {
 // ==========================================
 
 
-app.get('/api/community/posts', async (req, res) => {
-  try {
-    const { category, page = 1 } = req.query;
-    let filtered = {};
-    const limit = 5;
-    const skip = (Number(page) - 1) * limit;
-    if (category && category !== 'all') {
-      filtered.type = category;
-    }
-    const posts = await CommunityPost.find(filtered)
-      .sort({ posted_at: -1 })
-      .skip(skip)
-      .limit(limit)
-      .populate('author', 'displayName xp avatar');
-    const totalPosts = await CommunityPost.countDocuments(filtered);
-    res.json({
-      posts,
-      totalPages: Math.ceil(totalPosts / limit),
-    })
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-app.patch('/api/community/posts/:id/likes', protect, async (req, res) => {
-  try {
-    const postId = req.params.id;
-    const updatedPost = await CommunityPost.findByIdAndUpdate(
-      postId,
-      { $inc: { 'stats.upvotes': 1 } },
-      { new: true }
-    );
-    res.status(200).json(updatedPost);
-  }
-  catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-})
-app.patch('/api/community/posts/:id/dislikes', protect, async (req, res) => {
-  try {
-    const postId = req.params.id;
-    const updatedPost = await CommunityPost.findByIdAndUpdate(
-      postId,
-      { $inc: { 'stats.upvotes': -1 } },
-      { new: true }
-    );
-    res.status(200).json(updatedPost);
-  }
-  catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-})
-app.patch('/api/community/posts/:id/views', protect, async (req, res) => {
-  try {
-    const postId = req.params.id;
-    const updatedPostViews = await CommunityPost.findByIdAndUpdate(
-      postId,
-      { $inc: { 'stats.views': 1 } },
-      { new: true }
-    )
-    res.status(200).json(updatedPostViews);
-  }
-  catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-})
-app.get('/api/community/posts/:id', async (req, res) => {
-  try {
-    const postId = req.params.id;
-    const post = await CommunityPost.findById(postId)
-      .populate('author', 'avatar xp displayName')
-    res.json(post);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
-app.post('/api/community/posts', protect, async (req, res) => {
-  try {
-    console.log(req.body)
-    const post = await CommunityPost.create({
-      ...req.body,
-      author: req.user.id
-    });
-    res.status(201).json(post);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
-
 
 app.use('/api/auth', authRoute);
 
@@ -268,6 +181,7 @@ app.get('/api/user/:userId', protect, async (req, res) => {
     })
   }
 })
+app.use('/api',communityPostRoute);
 app.use('/api', levelRoute);
 app.use('/api', uploadCloudRoute);
 app.use('/api', editProfileRoute);

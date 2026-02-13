@@ -57,5 +57,5 @@ CommunityPostSchema.virtual('formatted_date').get(function () {
     hour12: false                 // Sử dụng định dạng 24h thay vì AM/PM
   })
 })
-const CommunityPost = mongoose.model("communityPosts", CommunityPostSchema);
+const CommunityPost = mongoose.model("CommunityPosts", CommunityPostSchema, "communityposts");
 module.exports = CommunityPost;

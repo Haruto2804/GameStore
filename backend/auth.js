@@ -28,9 +28,16 @@ router.post('/register', validationRegister, async (req, res) => {
     });
   }
   catch (err) {
+    if (err.code === 11000) {
+      const value = Object.values(err.keyValue)[0];
+      err.message = `Giá trị "${value}" đã tồn tại. Vui lòng thử lại!`;
+      return res.status(400).json({
+        message: err.message
+      });
+    }
     res.status(500).json({
       error: "Lưu tài khoản thất bại",
-      detail: err.message
+      message: err.message
     });
   }
 })

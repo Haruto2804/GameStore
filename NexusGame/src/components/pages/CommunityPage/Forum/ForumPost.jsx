@@ -2,7 +2,6 @@ import { FaEye } from "react-icons/fa"
 import { FaRegCommentAlt } from "react-icons/fa";
 import { Link } from "react-router";
 export function ForumPost({ postItem }) {
-  console.log(postItem)
   const displayDate = postItem.formatted_date || "Vừa xong";
   return (
     <div className="bg-slate-900 rounded-md border border-green-700/51 p-4 flex flex-col gap-2">

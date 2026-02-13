@@ -79,3 +79,5 @@ AccountSchema.virtual('joined').get(function () {
   return this.createdAt.toLocaleDateString('vi-VN');
 })
 module.exports = mongoose.model("Accounts", AccountSchema, "accounts");
+// Sau khi định nghĩa Schema xong...
+
