@@ -52,22 +52,41 @@ router.post('/login', validationLogin, async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ message: "Mật khẩu không chính xác!" });
     }
-    const token = jwt.sign(
-      {
-        id: user._id,
-        username: user.username,
-        displayName: user.displayName,
-        email: user.email
-      },
+    const payload = {
+      id: user._id,
+      username: user.username,
+      displayName: user.displayName,
+      email: user.email
+    }
+    const refreshPayload = {
+      id: user._id,
+      jti: crypto.randomUUID()
+    }
+    const accessToken = jwt.sign(
+      payload,
       process.env.JWT_SECRET,
       { expiresIn: '1d' }
     )
-    res.cookie('accessToken', token, {
+
+    const refreshToken = jwt.sign(
+      refreshPayload,
+      process.env.REFRESH_TOKEN_SECRET,
+      { expiresIn: '30d' }
+    )
+    res.cookie('accessToken', accessToken, {
       httpOnly: true,
       secure: false,
       sameSite: 'Lax',
       maxAge: 24 * 60 * 60 * 1000
     })
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'Lax',
+      path: '/api/auth/refresh-token',
+      maxAge: 30 * 24 * 60 * 60 * 1000
+    })
+
     const userData = user.toObject();
 
     delete userData.password;
@@ -91,6 +110,13 @@ router.post('/logout', (req, res) => {
       sameSite: 'Lax',
       expires: new Date(0)
     });
+    res.cookie('refreshToken', '', {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'Lax',
+      path: '/v1/auth/refresh-token',
+      expires: new Date(0)
+    });
     res.status(200).json({
       message: "Đăng xuất thành công"
     });
@@ -100,4 +126,48 @@ router.post('/logout', (req, res) => {
     });
   }
 })
+router.post('/refresh-token', async (req, res) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) return res.status(401).json("Không tìm thấy Refresh Token!!!");
+    // 1. Giải mã Token (Dùng try-catch để bắt lỗi verify trực tiếp)
+    let decoded;
+    try {
+      decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    } catch (error) {
+      return res.status(403).json("Refresh Token không hợp lệ hoặc hết hạn");
+    }
+    // 2. Tìm User từ Database (Vì đã có decoded nên ko cần callback nữa)
+    const user = await AccountModel.findById(decoded.id);
+    if (!user) return res.status(404).json("User đã bị xóa khỏi hệ thống!");
+
+    // 3. Tạo Payload và ký Access Token mới
+    const payload = {
+      id: user._id,
+      username: user.username,
+      displayName: user.displayName,
+      email: user.email
+    };
+
+    const newAccessToken = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' });
+
+    // 4. Gắn vào Cookie
+    res.cookie('accessToken', newAccessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'Lax',
+      maxAge: 24 * 60 * 60 * 1000
+    });
+
+    // 5. Trả về kết quả
+    return res.status(200).json({
+      message: "Gia hạn thành công!",
+      user: payload
+    });
+
+  } catch (err) {
+    console.error("Lỗi Refresh Token:", err);
+    res.status(500).json("Lỗi khi cấp phát accessToken mới!!");
+  }
+});
 module.exports = router;

@@ -1,6 +1,6 @@
 require('dotenv').config();
 const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const  {CloudinaryStorage}  = require('multer-storage-cloudinary');
 const multer = require('multer');
 
 // console.log(process.env.CLOUDINARY_CLOUD_NAME,process.env.CLOUDINARY_API_KEY,process.env.CLOUDINARY_API_SECRET)
@@ -16,7 +16,7 @@ const storage = new CloudinaryStorage({
     folder: 'avatar_users',
     allowed_formats: ['jpg', 'png'],
     transformation: [
-      { width: 500, height: 500, crop: 'fill', 'gravity': 'face' },
+      { width: 500, height: 500, crop: 'fill', gravity: 'face' },
       { quality: 'auto' },
       { fetch_format: 'auto' }
     ]

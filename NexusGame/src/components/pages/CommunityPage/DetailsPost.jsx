@@ -11,20 +11,23 @@ import { Link, useNavigate } from "react-router";
 import { useParams } from "react-router";
 import { useCallback } from "react";
 import axiosClient from "../../../AxiosClient";
-import { Navigate } from "react-router";
 import { useContext } from "react";
 import { AuthContext } from "../../../Context/AuthContext";
+import { commentService } from "../../services/commentService";
 export function DetailsPost() {
-  const [comment, setComment] = useState("");
+  const [commentInput, setCommentInput] = useState("");
+  const [comments, setComments] = useState([])
+  console.log(comments);
+  console.log('Dữ liệu comment lay duoc', commentInput);
   const [post, setPost] = useState({});
   const { id } = useParams();
   const user = post?.author;
   const { user: CurrentUser } = useContext(AuthContext);
-
   const navigate = useNavigate();
+  const [isLiked,setisLiked] = useState(false);
   const handleLikePost = async () => {
     try {
-      const resLike = await axiosClient.patch(`/community/posts/${id}/likes`);
+      const resLike = await axiosClient.patch(`/community/post/${id}/likes`);
       setPost(resLike.data);
     }
     catch (err) {
@@ -33,16 +36,26 @@ export function DetailsPost() {
   }
   const handleDisLikePost = async () => {
     try {
-      const resLike = await axiosClient.patch(`/community/posts/${id}/dislikes`);
+      const resLike = await axiosClient.patch(`/community/post/${id}/dislikes`);
       setPost(resLike.data);
     }
     catch (err) {
       console.error("Không thể like bài viết:", err);
     }
   }
+  const handleLikeComment = async () => {
+    try {
+      const response = await commentService.like(id);
+      const updatedPost = response?.data?.updatedPost;
+      console.log('Post vua cap nhat', updatedPost);
+    }
+    catch (err) {
+      console.log(err?.response?.data?.message);
+    }
+  }
   const incrementView = useCallback(async () => {
     try {
-      await axiosClient.patch(`/community/posts/${id}/views`);
+      await axiosClient.patch(`/community/post/${id}/views`);
       console.log("Đã cộng 1 view sau 60 giây xem!");
     }
     catch (err) {
@@ -52,18 +65,26 @@ export function DetailsPost() {
   useEffect(() => {
     const fecthDetailsPost = async () => {
       try {
-        const postRes = await axiosClient.get(`/community/posts/${id}`);
+        const [postRes, CommentPostsRes] = await Promise.all([
+          axiosClient.get(`/community/post/${id}`),
+          commentService.getComments(id)
+        ]);
         setPost(postRes.data);
+        setComments(CommentPostsRes.comments);
       } catch (err) {
         console.error("Lỗi fetch details:", err);
       }
     };
     fecthDetailsPost();
+
+
     const timer = setTimeout(() => {
       incrementView();
     }, 60000)
     return () => clearTimeout(timer);
-  }, [CurrentUser, id, incrementView, navigate, user]);
+
+  }, [id, incrementView]);
+
   return (
     <div className="bg-bg-base mt-22">
       <div className="text-white max-w-5xl mx-auto p-4">
@@ -87,7 +108,7 @@ export function DetailsPost() {
           <div
             onClick={() => {
               if (CurrentUser?.id === user?.id) {
-                navigate('/user', {replace: true});
+                navigate('/user', { replace: true });
               }
               else {
                 navigate(`/user/${user.id}`)
@@ -163,9 +184,26 @@ export function DetailsPost() {
 
         <div className="w-full h-0.5 bg-gray-800 mt-5 mb-5"></div>
 
-        <CommentSection comment={comment} setComment={setComment} />
+        <CommentSection
+          onCommentAdded={(newComment) => {
+            const enrichedComment = {
+              ...newComment,
+              author: {
+                displayName: CurrentUser.displayName,
+                avatar: CurrentUser.avatar,
+                level: CurrentUser.level || 1
+              },
+              likes: 0,
+              createdAt: new Date().toISOString()
+            };
+
+            setComments([enrichedComment, ...comments]);
+          }}
+          comment={commentInput} setComment={setCommentInput} />
         <div className="mt-5">
-          <CommentList />
+          <CommentList
+            handleLikeComment ={handleLikeComment}
+            comments={comments} />
         </div>
       </div>
     </div>

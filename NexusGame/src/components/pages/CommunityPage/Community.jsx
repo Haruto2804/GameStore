@@ -59,7 +59,7 @@ export function Community() {
 
     try {
       console.log("Dữ liệu gửi lên server:", finalData);
-      const res = await axiosClient.post('/community/posts', finalData);
+      const res = await axiosClient.post('/community/post', finalData);
 
       // Sau khi gửi thành công:
       setIsModalOpen(false);

@@ -6,7 +6,7 @@ const CommentPostSchema = new mongoose.Schema(
       ref: 'CommunityPosts',
       required: true
     },
-    userId: {
+    author: {
       type: mongoose.Schema.ObjectId,
       ref: 'Accounts',
       required: true
@@ -20,7 +20,16 @@ const CommentPostSchema = new mongoose.Schema(
     parentId: {
       type: mongoose.Schema.ObjectId,
       ref: 'Comment',
-      default: null 
+      default: null
+    },
+    likes: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Accounts'
+        }
+      ],
+      default: [] // Luôn khởi tạo là mảng rỗng
     }
   },
   {
@@ -28,5 +37,5 @@ const CommentPostSchema = new mongoose.Schema(
     collection: 'commentposts'
   }
 )
-const CommentPost = mongoose.model("Comment",CommentPostSchema,"commentposts");
+const CommentPost = mongoose.model("Comment", CommentPostSchema, "commentposts");
 module.exports = CommentPost;

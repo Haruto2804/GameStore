@@ -13,7 +13,7 @@ export function ForumPost({ postItem }) {
         </p>
 
       </div>
-      <Link to={`/community/posts/${postItem._id}`} className="text-white font-bold text-xl hover:text-green-500 select-none cursor-pointer transition-all duration-300">
+      <Link to={`/community/post/${postItem._id}`} className="text-white font-bold text-xl hover:text-green-500 select-none cursor-pointer transition-all duration-300">
         {postItem?.title}
       </Link>
       <p className="text-gray-400 line-clamp-3">

@@ -16,9 +16,11 @@ const communityPostRoute = require('./routes/communityPost.route.js');
 const { protect } = require('./authMiddleware.js');
 const app = express();
 app.use(cors({
-  origin: 'http://localhost:5173',
-  credentials: true
-}))
+  origin: 'http://localhost:5173', // Địa chỉ chính xác của Frontend (Vite/React)
+  credentials: true,               // Cho phép nhận Cookie
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));  
 app.use(express.json());
 app.use(cookieParser());
 // Kết nối Database
@@ -181,7 +183,7 @@ app.get('/api/user/:userId', protect, async (req, res) => {
     })
   }
 })
-app.use('/api',communityPostRoute);
+app.use('/api/community', communityPostRoute);
 app.use('/api', levelRoute);
 app.use('/api', uploadCloudRoute);
 app.use('/api', editProfileRoute);

@@ -1,17 +1,45 @@
 import { LiaCommentsSolid } from "react-icons/lia";
-export function CommentSection({ comment, setComment }) {
+import { commentService } from "../../services/commentService";
+import { useParams } from "react-router";
+import { useState } from "react";
+export function CommentSection({ comment, setComment,onCommentAdded }) {
+  const { id } = useParams();
+  const [loading, setLoading] = useState(false); //
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    if (!comment.trim()) {
+      alert('Bình luận xin đừng để trống nha!');
+  
+      return;
+    }
+    setLoading(true); 
+    try {
+      const response = await commentService.create(id, comment);
+      if(onCommentAdded) {
+        onCommentAdded(response);
+      }
+      alert('Gửi bình luận thành công!');
+    }
+    catch (err) {
+      alert('Không thể gửi bình luận!');
+      console.log('Lỗi bình luận!', err);
+    }
+    finally {
+      setLoading(false);
+    }
+  }
   return (
     <>
       <header className="flex gap-3 items-center mb-4">
         <LiaCommentsSolid className="size-6 text-blue-500" />
         <p className="font-bold text-xl">42 Comments</p>
       </header>
-      <main className="mt-4 flex flex-col items-end relative">
+      <form onSubmit={handleCommentSubmit} className="mt-4 flex flex-col items-end relative">
         {/* Thêm items-end để nút nằm bên phải */}
 
         <textarea
-          value = {comment}
-          onChange={(e)=> setComment(e.target.value)}
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
           placeholder="Add a comment..."
           className="w-full h-35 p-4 bg-transparent border border-blue-800 rounded-md 
                focus:ring-2 focus:ring-blue-600 focus:outline-none 
@@ -21,6 +49,7 @@ export function CommentSection({ comment, setComment }) {
 
         <div className="absolute top-19 right-5 flex gap-4">
           <button
+            type="button"
             onClick={() => setComment("")}
             className="mt-3 hover:bg-slate-800 active:scale-95 cursor-pointer 
                text-white font-bold py-2 px-3 rounded-full 
@@ -29,16 +58,16 @@ export function CommentSection({ comment, setComment }) {
             Cancel
           </button>
           <button
-          onClick = {() => alert(comment)}
-            className="mt-3 bg-blue-600 hover:bg-blue-500 active:scale-95 cursor-pointer 
-               text-white font-bold py-2 px-3 rounded-full 
-               transition-all duration-200 shadow-lg shadow-blue-900/20"
+            type="submit"
+          
+            className={`mt-3 font-bold py-2 px-3 rounded-full transition-all duration-200 shadow-lg 
+               ${loading ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 active:scale-95 cursor-pointer shadow-blue-900/20 text-white'}`}
           >
-            Post
+            {loading ? "Posting..." : "Post"}
           </button>
         </div>
 
-      </main>
+      </form>
     </>
   )
 }

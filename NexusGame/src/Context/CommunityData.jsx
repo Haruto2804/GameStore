@@ -10,7 +10,7 @@ export const CommunityProvider = ({ children }) => {
   useEffect(() => {
     const fetchCommunityPosts = async () => {
       try {
-        const res = await axiosClient.get(`/community/posts`, {
+        const res = await axiosClient.get(`/community/post`, {
           params: {
             category: category !== 'all' ? category : undefined,
             page: currentPage

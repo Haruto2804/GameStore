@@ -39,7 +39,7 @@ function App() {
                     <GameDetails />
                   }></Route>
                   <Route path="/community" element={<Community />} />
-                  <Route path="/community/posts/:id" element={<DetailsPost />} />
+                  <Route path="/community/post/:id" element={<DetailsPost />} />
                   <Route path="/genres"></Route>
                   <Route path="/platform"></Route>
                   <Route path="/discount" ></Route>
